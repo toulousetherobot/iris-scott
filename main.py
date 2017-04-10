@@ -58,7 +58,8 @@ def main():
 
   # Image Loading
   img_splash = pygame.image.load('splash.png').convert_alpha()
-  splash_start = datetime.now() + timedelta(seconds=5)
+  SPLASH_TIMEOUT = 1
+  splash_start = datetime.now() + timedelta(seconds=SPLASH_TIMEOUT)
 
   # Passcode Peristent Variables
   passcode = [1, 9, 0, 1]
@@ -87,7 +88,7 @@ def main():
     if (os_state == UI_WIN_SPLASH_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Splash Screen")
-        splash_start = datetime.now() + timedelta(seconds=5)
+        splash_start = datetime.now() + timedelta(seconds=SPLASH_TIMEOUT)
         loaded_new_state = 1
         DISPLAYSURF.fill(BGCOLOR)
       DISPLAYSURF.blit(img_splash, (20, 59))
@@ -100,8 +101,11 @@ def main():
       if (not loaded_new_state):
         print("----> Displaying Passcode Lock Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(BGCOLOR) # Reset Frame
 
+        passcode_title = "Enter Passcode"
+
+        # Draw Buttons Once
         passcode_buttons = []
         buttonx, buttony = PASSCODE_BUTTON_XSTART, PASSCODE_BUTTON_YSTART
         for row in PASSCODE_BUTTON_STRUCTURE:
@@ -116,7 +120,12 @@ def main():
           buttonx = PASSCODE_BUTTON_XSTART
 
       # Update Passcode Entry
-      passcode_text_surf = SF_UI_DISPLAY_HEAVY.render("Enter Passcode", True, WHITE, BLACK)
+      if (len(passcode_attempt) > 0):
+        passcode_title = (u"\u2022 " * len(passcode_attempt))
+
+      passcode_text_blackout_rect = pygame.Rect(0, 0, WINDOWWIDTH, PASSCODE_BUTTON_YSTART)
+      pygame.draw.rect(DISPLAYSURF, BGCOLOR, passcode_text_blackout_rect)
+      passcode_text_surf = SF_UI_DISPLAY_HEAVY.render(passcode_title, True, WHITE, BLACK)
       passcode_text_rect = passcode_text_surf.get_rect()
       passcode_text_rect.center = (WINDOWWIDTH/2, PASSCODE_BUTTON_YSTART/2)
       DISPLAYSURF.blit(passcode_text_surf, passcode_text_rect)
@@ -141,8 +150,9 @@ def main():
           loaded_new_state = 0
         else:
           passcode_failed_attempts += 1
+          print("Failed Attempts: ", passcode_failed_attempts)
+          passcode_title = "Wrong Passcode"
         del passcode_attempt[:]
-
     elif (os_state == UI_WIN_MAIN_MENU_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Main Menu Screen")
