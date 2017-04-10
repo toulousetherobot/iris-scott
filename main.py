@@ -91,6 +91,7 @@ def main():
         splash_start = datetime.now() + timedelta(seconds=SPLASH_TIMEOUT)
         loaded_new_state = 1
         DISPLAYSURF.fill(BGCOLOR)
+
       DISPLAYSURF.blit(img_splash, (20, 59))
 
       # Timer to Passcode Lock
@@ -121,8 +122,13 @@ def main():
 
       # Update Passcode Entry
       if (len(passcode_attempt) > 0):
-        passcode_title = (u"\u2022 " * len(passcode_attempt))
+        # display only most recent digit
+        passcode_title = (u"\u2022 " * (len(passcode_attempt)-1))
+        passcode_title += str(passcode_attempt[-1])
+      elif(len(passcode_attempt) == 0):
+        passcode_title = "Enter Passcode"
 
+      # Render Passcode Header
       passcode_text_blackout_rect = pygame.Rect(0, 0, WINDOWWIDTH, PASSCODE_BUTTON_YSTART)
       pygame.draw.rect(DISPLAYSURF, BGCOLOR, passcode_text_blackout_rect)
       passcode_text_surf = SF_UI_DISPLAY_HEAVY.render(passcode_title, True, WHITE, BLACK)
@@ -130,6 +136,7 @@ def main():
       passcode_text_rect.center = (WINDOWWIDTH/2, PASSCODE_BUTTON_YSTART/2)
       DISPLAYSURF.blit(passcode_text_surf, passcode_text_rect)
 
+      # Button Logic
       if (mouseClicked):
         for button in passcode_buttons:
           if button["target"].collidepoint((mousex, mousey)):
