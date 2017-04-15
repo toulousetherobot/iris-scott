@@ -41,12 +41,17 @@ def FilledRoundedRectangle(surface, rect, color, radius=0.4):
 
     rect         = Rect(rect)
     original_rect = deepcopy(rect)
-    color        = Color(*color)
+    original_color = deepcopy(color)
+    if isinstance(color, list):
+        color        = Color("white")
+    else: 
+        color        = Color(*color)
     alpha        = color.a
     color.a      = 0
     pos          = rect.topleft
     rect.topleft = 0,0
     rectangle    = Surface(rect.size, SRCALPHA)
+    gradient    = Surface(rect.size, SRCALPHA)
 
     circle       = Surface([min(rect.size)*3]*2, SRCALPHA)
     draw.ellipse(circle,(0,0,0),circle.get_rect(),0)
@@ -64,10 +69,15 @@ def FilledRoundedRectangle(surface, rect, color, radius=0.4):
     rectangle.fill((0,0,0),rect.inflate(0,-radius.h))
 
     rectangle.fill(color,special_flags=BLEND_RGBA_MAX)
-    # FillGradient(rectangle, ui.colours.PHOSPHORIC_LIGHT_COLOR, ui.colours.PHOSPHORIC_DARK_COLOR)
     rectangle.fill((255,255,255,alpha),special_flags=BLEND_RGBA_MIN)
-    surface.blit(rectangle, pos)
 
+    # Mask Gradient with Rounded
+    if isinstance(original_color, list):
+        FillGradient(gradient, original_color[0], original_color[1])
+        gradient.blit(rectangle, (0, 0), None, BLEND_RGBA_MULT)
+        surface.blit(gradient, pos)
+    else:
+        surface.blit(rectangle, pos)
     return original_rect
 
 def FillGradient(surface, color, gradient, rect=None, vertical=True, forward=True):
