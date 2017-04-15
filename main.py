@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 import ui
 import ui.passcode
 import ui.mainmenu
+import ui.program
 import ui.colours
 import ui.fonts
 import ui.utilities
@@ -48,7 +49,7 @@ def main():
   pygame.display.set_caption('Toulouse')
 
   # Start Up with Splash Screen
-  os_state = UI_WIN_MAIN_MENU_SCREEN
+  os_state = UI_WIN_PROGRAM_SELECTION_SCREEN
   prev_state = UI_WIN_HOME_SCREEN
   loaded_new_state = 0
 
@@ -192,9 +193,6 @@ def main():
               os_state = prev_state
               loaded_new_state = 0
               prev_state = UI_WIN_MAIN_MENU_SCREEN
-
-            print("Clicked", button["value"])
-
     elif (os_state == UI_WIN_MANUAL_JOG_CARTESIAN_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Manual Jog (Cartesian) Screen")
@@ -210,6 +208,35 @@ def main():
         print("----> Displaying Program Selection Screen")
         loaded_new_state = 1
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
+
+        # Draw Buttons Once
+        program_buttons = []
+
+        title_text_surf = ui.fonts.SF_UI_DISPLAY_HEAVY.render("Program", True, ui.colours.WHITE, ui.colours.BLACK)
+        title_text_rect = title_text_surf.get_rect()
+        title_text_rect.midleft = (ui.UI_MARGIN, ui.UI_MARGIN_TOP/2)
+        DISPLAYSURF.blit(title_text_surf, title_text_rect)
+
+        for i in range(len(ui.program.BUTTONS)):
+          program_buttons.append(ui.program.rounded_button(DISPLAYSURF, ui.program.BUTTONS[i], 
+            ui.UI_MARGIN, ui.UI_MARGIN_TOP + (ui.program.BUTTON_YSIZE+ui.program.BUTTON_YGAP)*i))
+
+      # Button Logic
+      if (mouseClicked):
+        for button in program_buttons:
+          if button["target"].collidepoint((mousex, mousey)):
+            if (button["value"] == ui.program.BUTTON_CARICATURE):
+              print("      Swapping to Photo Capture Screen")
+              os_state = UI_WIN_PHOTO_CAPTURE_SCREEN
+              loaded_new_state = 0
+              prev_state = UI_WIN_PROGRAM_SELECTION_SCREEN
+
+            if (button["value"] == ui.program.BUTTON_CARICATURE):
+              print("      Swapping to List Programs")
+              os_state = UI_WIN_CURVES_SELECTION_SCREEN
+              loaded_new_state = 0
+              prev_state = UI_WIN_PROGRAM_SELECTION_SCREEN
+
     elif (os_state == UI_WIN_PHOTO_CAPTURE_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Photo Capture Screen")
