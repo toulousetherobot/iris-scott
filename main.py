@@ -8,18 +8,13 @@ from pygame.locals import *
 from datetime import datetime, timedelta
 
 # UI Constants & Helper Functions
+import ui
+import ui.passcode
+import ui.mainmenu
+import ui.colours
+import ui.fonts
+import ui.utilities
 from ui.passcode import *
-from ui.fonts import *
-
-FPS = 30 # frames per second, the general speed of the program
-WINDOWWIDTH = 320 # size of window's width in pixels
-WINDOWHEIGHT = 240 # size of windows' height in pixels
-
-#            R    G    B
-BLACK    = (  0,   0,   0)
-WHITE    = (255, 255, 255)
-
-BGCOLOR = BLACK
 
 # Windows
 UI_WIN_SPLASH_SCREEN = 1
@@ -44,8 +39,8 @@ def main():
   FPSCLOCK = pygame.time.Clock()
   
   # Screen Size
-  DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-  DISPLAYSURF.fill(BGCOLOR)
+  DISPLAYSURF = pygame.display.set_mode((ui.WINDOWWIDTH, ui.WINDOWHEIGHT))
+  DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
   # os.putenv('SDL_FBDEV', '/dev/fb1')
 
   mousex = 0 # used to store x coordinate of mouse event
@@ -53,18 +48,20 @@ def main():
   pygame.display.set_caption('Toulouse')
 
   # Start Up with Splash Screen
-  os_state = UI_WIN_SPLASH_SCREEN
+  os_state = UI_WIN_MAIN_MENU_SCREEN
+  prev_state = UI_WIN_HOME_SCREEN
   loaded_new_state = 0
 
   # Image Loading
   img_splash = pygame.image.load('splash.png').convert_alpha()
   SPLASH_TIMEOUT = 1
-  splash_start = datetime.now() + timedelta(seconds=SPLASH_TIMEOUT)
+  splash_start = datetime.now()
 
   # Passcode Peristent Variables
   passcode = [1, 9, 0, 1]
   passcode_attempt = []
   passcode_failed_attempts = 0
+  passcode_lockout_end = None
 
   while True:
     mouseClicked = False
@@ -90,7 +87,7 @@ def main():
         print("----> Displaying Splash Screen")
         splash_start = datetime.now() + timedelta(seconds=SPLASH_TIMEOUT)
         loaded_new_state = 1
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
 
       DISPLAYSURF.blit(img_splash, (20, 59))
 
@@ -102,7 +99,7 @@ def main():
       if (not loaded_new_state):
         print("----> Displaying Passcode Lock Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(BGCOLOR) # Reset Frame
+        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR) # Reset Frame
 
         passcode_title = "Enter Passcode"
 
@@ -129,11 +126,11 @@ def main():
         passcode_title = "Enter Passcode"
 
       # Render Passcode Header
-      passcode_text_blackout_rect = pygame.Rect(0, 0, WINDOWWIDTH, PASSCODE_BUTTON_YSTART)
-      pygame.draw.rect(DISPLAYSURF, BGCOLOR, passcode_text_blackout_rect)
-      passcode_text_surf = SF_UI_DISPLAY_HEAVY.render(passcode_title, True, WHITE, BLACK)
+      passcode_text_blackout_rect = pygame.Rect(0, 0, ui.WINDOWWIDTH, ui.UI_MARGIN_TOP)
+      pygame.draw.rect(DISPLAYSURF, ui.colours.SCREEN_BG_COLOR, passcode_text_blackout_rect)
+      passcode_text_surf = ui.fonts.SF_UI_DISPLAY_HEAVY.render(passcode_title, True, ui.colours.WHITE, ui.colours.BLACK)
       passcode_text_rect = passcode_text_surf.get_rect()
-      passcode_text_rect.center = (WINDOWWIDTH/2, PASSCODE_BUTTON_YSTART/2)
+      passcode_text_rect.center = (ui.WINDOWWIDTH/2, ui.UI_MARGIN_TOP/2)
       DISPLAYSURF.blit(passcode_text_surf, passcode_text_rect)
 
       # Button Logic
@@ -154,6 +151,7 @@ def main():
         if (passcode_attempt == passcode):
           passcode_failed_attempts = 0
           os_state = UI_WIN_HOME_SCREEN
+          prev_state = UI_WIN_PASSCODE_LOCK_SCREEN
           loaded_new_state = 0
         else:
           passcode_failed_attempts += 1
@@ -164,66 +162,98 @@ def main():
       if (not loaded_new_state):
         print("----> Displaying Main Menu Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
+
+        # Draw Buttons Once
+        menu_buttons = []
+
+        cancel_text_surf = ui.fonts.SF_UI_DISPLAY_HEAVY.render("Cancel", True, ui.colours.WHITE, ui.colours.BLACK)
+        cancel_text_rect = cancel_text_surf.get_rect()
+        cancel_text_rect.midleft = (ui.UI_MARGIN, ui.UI_MARGIN_TOP/2)
+        DISPLAYSURF.blit(cancel_text_surf, cancel_text_rect)
+        menu_buttons.append({"target": cancel_text_rect, "value": 4})
+
+        for i in range(len(ui.mainmenu.BUTTONS)):
+          menu_buttons.append(ui.mainmenu.rounded_button(DISPLAYSURF, ui.mainmenu.BUTTONS[i], 
+            ui.UI_MARGIN, ui.WINDOWHEIGHT-ui.UI_MARGIN_BOTTOM-(ui.mainmenu.BUTTON_YSIZE+ui.mainmenu.BUTTON_YGAP)*(i+1)))
+
+      # Button Logic
+      if (mouseClicked):
+        for button in menu_buttons:
+          if button["target"].collidepoint((mousex, mousey)):
+            if (button["value"] == ui.mainmenu.BUTTON_SHUTDOWN):
+              print("      Shutting Down. Immediatley")
+            if (button["value"] == ui.mainmenu.BUTTON_RESTART):
+              print("      Restarting. Immediatley")
+            if (button["value"] == ui.mainmenu.BUTTON_LOCK):
+              os_state = UI_WIN_PASSCODE_LOCK_SCREEN
+              loaded_new_state = 0
+            if (button["value"] == ui.mainmenu.BUTTON_CANCEL):
+              os_state = prev_state
+              loaded_new_state = 0
+              prev_state = UI_WIN_MAIN_MENU_SCREEN
+
+            print("Clicked", button["value"])
+
     elif (os_state == UI_WIN_MANUAL_JOG_CARTESIAN_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Manual Jog (Cartesian) Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
     elif (os_state == UI_WIN_MANUAL_JOG_JOINT_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Manual Jog (Joint Angles) Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
     elif (os_state == UI_WIN_PROGRAM_SELECTION_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Program Selection Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
     elif (os_state == UI_WIN_PHOTO_CAPTURE_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Photo Capture Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
     elif (os_state == UI_WIN_CURVES_SELECTION_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Curves Selection Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
     elif (os_state == UI_WIN_MESSAGES_LIST_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Message List Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
     elif (os_state == UI_WIN_MESSAGE_INFO_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Message (Info) Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
     elif (os_state == UI_WIN_MESSAGE_SUCCESS_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Message (Success) Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
     elif (os_state == UI_WIN_MESSAGE_WARNING_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Message (Warning) Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
     elif (os_state == UI_WIN_MESSAGE_ERROR_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Message (Error) Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
     else: # Display Home Screen
       if (not loaded_new_state):
         print("----> Displaying Home Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
 
     # Redraw the screen and wait a clock tick.
     pygame.display.update()
-    FPSCLOCK.tick(FPS)
+    FPSCLOCK.tick(ui.FPS)
 
 if __name__ == '__main__':
     main()

@@ -1,6 +1,31 @@
 from pygame import *
 from copy import deepcopy
 
+def FilledCircle(surface, circ, color):
+
+    """
+    FilledRoundedRectangle(surface, rect, color)
+
+    surface : destination
+    rect    : rectangle
+    color   : rgb or rgba
+    """
+
+    rect         = Rect((circ[0]-circ[2]/2, circ[1]-circ[2]/2, circ[2], circ[2]))
+    color        = Color(*color)
+    color.a      = 0
+    rectangle    = Surface(rect.size, SRCALPHA)
+
+    circle = Surface([min(rect.size)*3]*2, SRCALPHA)
+    draw.ellipse(circle,(0,0,0),circle.get_rect(),0)
+    circle = transform.smoothscale(circle,[int(min(rect.size))]*2)
+    rectangle.blit(circle,(0,0))
+
+    rectangle.fill(color,special_flags=BLEND_RGBA_MAX)
+    surface.blit(rectangle, rect.topleft)
+
+    return rect
+
 def FilledRoundedRectangle(surface, rect, color, radius=0.4):
 
     """
@@ -38,6 +63,6 @@ def FilledRoundedRectangle(surface, rect, color, radius=0.4):
 
     rectangle.fill(color,special_flags=BLEND_RGBA_MAX)
     rectangle.fill((255,255,255,alpha),special_flags=BLEND_RGBA_MIN)
-    surface.blit(rectangle,pos)
+    surface.blit(rectangle, pos)
 
     return original_rect
