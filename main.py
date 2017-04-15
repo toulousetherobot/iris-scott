@@ -4,6 +4,7 @@ Created on April 9, 2017
 '''
 import pygame
 import sys
+import os
 from pygame.locals import *
 from datetime import datetime, timedelta
 
@@ -15,6 +16,7 @@ import ui.program
 import ui.colours
 import ui.fonts
 import ui.utilities
+import ui.curvesselection
 from ui.passcode import *
 
 # Windows
@@ -49,7 +51,7 @@ def main():
   pygame.display.set_caption('Toulouse')
 
   # Start Up with Splash Screen
-  os_state = UI_WIN_PROGRAM_SELECTION_SCREEN
+  os_state = UI_WIN_CURVES_SELECTION_SCREEN
   prev_state = UI_WIN_HOME_SCREEN
   loaded_new_state = 0
 
@@ -64,6 +66,11 @@ def main():
   passcode_failed_attempts = 0
   passcode_lockout_end = None
 
+  # Scroll Parameters
+  scroll_y_min = 0
+  scroll_y = 0
+  scroll_y_max = 0
+
   while True:
     mouseClicked = False
 
@@ -73,6 +80,8 @@ def main():
         sys.exit()
       elif event.type == MOUSEBUTTONDOWN:
         mousex, mousey = event.pos
+        if event.button == 4: scroll_y = min(scroll_y + 15, scroll_y_min)
+        if event.button == 5: scroll_y = max(scroll_y - 15, scroll_y_max)
         pygame.event.clear(pygame.MOUSEBUTTONDOWN)
       elif event.type == MOUSEMOTION:
         mousex, mousey = event.pos
@@ -233,17 +242,53 @@ def main():
               os_state = UI_WIN_CURVES_SELECTION_SCREEN
               loaded_new_state = 0
               prev_state = UI_WIN_PROGRAM_SELECTION_SCREEN
-
     elif (os_state == UI_WIN_PHOTO_CAPTURE_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Photo Capture Screen")
         loaded_new_state = 1
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
     elif (os_state == UI_WIN_CURVES_SELECTION_SCREEN):
+      DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
       if (not loaded_new_state):
         print("----> Displaying Curves Selection Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
+        scroll_y = 0 # reset scroll
+
+        # Check Curves Directory Exists & If Not Create One
+        current_directory = os.getcwd()
+        curves_path = os.path.join(current_directory, ui.curvesselection.CURVES_FOLDER)
+        if not os.path.exists(curves_path):
+          os.makedirs(curves_path, exist_ok=True)
+
+        # Create Sorted List of Files
+        files = []
+        for (dirpath, dirnames, filenames) in os.walk(curves_path):
+          files.extend(filenames)
+          break
+        sorted(files)
+
+        # Set Maximum Scroll Y Max
+        scroll_y_max = -(ui.curvesselection.BUTTON_YSIZE+ui.curvesselection.BUTTON_YGAP)*len(files)
+        scroll_y_max += ui.WINDOWHEIGHT-ui.UI_MARGIN_TOP
+
+      # Draw Buttons Once
+      files_buttons = []
+
+      for i in range(len(files)):
+        files_buttons.append(ui.curvesselection.rounded_button(DISPLAYSURF, files[i], 
+          ui.UI_MARGIN, ui.UI_MARGIN_TOP + scroll_y +(ui.curvesselection.BUTTON_YSIZE+ui.curvesselection.BUTTON_YGAP)*i))
+
+      ui.utilities.Header(DISPLAYSURF, "Programs", ui.colours.PHOSPHORIC_LIGHT_COLOR)
+
+    # Button Logic
+    if (mouseClicked):
+      for button in files_buttons:
+        if button["target"].collidepoint((mousex, mousey)):
+          if (button["value"] == ui.curvesselection.BUTTON_FILE):
+            print("      Starting Processing on Curves File:", button["action"])
+            os_state = UI_WIN_HOME_SCREEN
+            loaded_new_state = 0
+            prev_state = UI_WIN_CURVES_SELECTION_SCREEN
     elif (os_state == UI_WIN_MESSAGES_LIST_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Message List Screen")
