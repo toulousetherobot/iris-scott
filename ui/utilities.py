@@ -1,7 +1,18 @@
 from pygame import *
 from copy import deepcopy
 
+import ui
 import ui.colours
+
+def Header(surface, title, color, bg_color = ui.colours.SCREEN_BG_COLOR):
+
+    rect = Rect(0,0, ui.WINDOWWIDTH, ui.UI_MARGIN_TOP)
+    draw.rect(surface, bg_color, rect)
+
+    title_text_surf = ui.fonts.SF_UI_DISPLAY_HEAVY.render(title, True, color, bg_color)
+    title_text_rect = title_text_surf.get_rect()
+    title_text_rect.midleft = (ui.UI_MARGIN, ui.UI_MARGIN_TOP/2)
+    surface.blit(title_text_surf, title_text_rect)
 
 def FilledCircle(surface, circ, color):
 

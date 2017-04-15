@@ -212,10 +212,7 @@ def main():
         # Draw Buttons Once
         program_buttons = []
 
-        title_text_surf = ui.fonts.SF_UI_DISPLAY_HEAVY.render("Program", True, ui.colours.WHITE, ui.colours.BLACK)
-        title_text_rect = title_text_surf.get_rect()
-        title_text_rect.midleft = (ui.UI_MARGIN, ui.UI_MARGIN_TOP/2)
-        DISPLAYSURF.blit(title_text_surf, title_text_rect)
+        ui.utilities.Header(DISPLAYSURF, "Programs", ui.colours.PHOSPHORIC_LIGHT_COLOR)
 
         for i in range(len(ui.program.BUTTONS)):
           program_buttons.append(ui.program.rounded_button(DISPLAYSURF, ui.program.BUTTONS[i], 
