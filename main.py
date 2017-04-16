@@ -17,6 +17,7 @@ import ui.colours
 import ui.fonts
 import ui.utilities
 import ui.curvesselection
+import ui.messages
 from ui.passcode import *
 
 # Windows
@@ -280,20 +281,36 @@ def main():
 
       ui.utilities.Header(DISPLAYSURF, "Programs", ui.colours.PHOSPHORIC_LIGHT_COLOR)
 
-    # Button Logic
-    if (mouseClicked):
-      for button in files_buttons:
-        if button["target"].collidepoint((mousex, mousey)):
-          if (button["value"] == ui.curvesselection.BUTTON_FILE):
-            print("      Starting Processing on Curves File:", button["action"])
-            os_state = UI_WIN_HOME_SCREEN
-            loaded_new_state = 0
-            prev_state = UI_WIN_CURVES_SELECTION_SCREEN
+      # Button Logic
+      if (mouseClicked):
+        for button in files_buttons:
+          if button["target"].collidepoint((mousex, mousey)):
+            if (button["value"] == ui.curvesselection.BUTTON_FILE):
+              print("      Starting Processing on Curves File:", button["action"])
+              os_state = UI_WIN_HOME_SCREEN
+              loaded_new_state = 0
+              prev_state = UI_WIN_CURVES_SELECTION_SCREEN
     elif (os_state == UI_WIN_MESSAGES_LIST_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Message List Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
+        scroll_y = 0 # reset scroll
+
+        # Draw Buttons Once
+        messages_buttons = []
+
+        # Set Maximum Scroll Y Max
+        scroll_y_max = -(ui.messages.BUTTON_YSIZE+ui.messages.BUTTON_YGAP)*len(ui.messages.BUTTONS)
+        scroll_y_max += ui.WINDOWHEIGHT-ui.UI_MARGIN_TOP
+
+      DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
+
+      for i in range(len(ui.messages.BUTTONS)):
+        messages_buttons.append(ui.messages.rounded_button(DISPLAYSURF, ui.messages.BUTTONS[i], 
+          ui.UI_MARGIN, ui.UI_MARGIN_TOP + scroll_y + (ui.messages.BUTTON_YSIZE+ui.messages.BUTTON_YGAP)*(i)))
+
+      ui.utilities.Header(DISPLAYSURF, "Messages", ui.colours.WHITE)
+
     elif (os_state == UI_WIN_MESSAGE_INFO_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Message (Info) Screen")
