@@ -7,6 +7,7 @@ from pygame.locals import *
 
 pygame.font.init()
 
+SF_UI_DISPLAY_LIGHT_XL = pygame.font.Font("SF-UI-Display-Light.otf", 65)
 SF_UI_DISPLAY_HEAVY = pygame.font.Font("SF-UI-Display-Heavy.otf", 16)
 SF_UI_DISPLAY_LIGHT = pygame.font.Font("SF-UI-Display-Light.otf", 16)
 SF_UI_TEXT_LIGHT_HEADER = pygame.font.Font("SF-UI-Text-Light.otf", 24)

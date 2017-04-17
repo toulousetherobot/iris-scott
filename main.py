@@ -18,6 +18,7 @@ import ui.fonts
 import ui.utilities
 import ui.curvesselection
 import ui.messages
+import ui.jog
 from ui.passcode import *
 
 # Windows
@@ -208,6 +209,14 @@ def main():
         print("----> Displaying Manual Jog (Cartesian) Screen")
         loaded_new_state = 1
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
+        # Draw Buttons Once
+        axis_buttons = []
+
+        ui.utilities.Header(DISPLAYSURF, "Cartesian Jog", ui.colours.WHITE)
+
+        for i in range(len(ui.jog.AXIS_CARTESIAN)):
+          axis_buttons.append(ui.jog.axis_controller(DISPLAYSURF, ui.jog.AXIS_CARTESIAN[i], ui.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
+
     elif (os_state == UI_WIN_MANUAL_JOG_JOINT_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Manual Jog (Joint Angles) Screen")
@@ -310,7 +319,6 @@ def main():
           ui.UI_MARGIN, ui.UI_MARGIN_TOP + scroll_y + (ui.messages.BUTTON_YSIZE+ui.messages.BUTTON_YGAP)*(i)))
 
       ui.utilities.Header(DISPLAYSURF, "Messages", ui.colours.WHITE)
-
     elif (os_state == UI_WIN_MESSAGE_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Message Screen")
