@@ -31,10 +31,7 @@ UI_WIN_PROGRAM_SELECTION_SCREEN = 7
 UI_WIN_PHOTO_CAPTURE_SCREEN = 8
 UI_WIN_CURVES_SELECTION_SCREEN = 9
 UI_WIN_MESSAGES_LIST_SCREEN = 10
-UI_WIN_MESSAGE_INFO_SCREEN = 11
-UI_WIN_MESSAGE_SUCCESS_SCREEN = 12
-UI_WIN_MESSAGE_WARNING_SCREEN = 13
-UI_WIN_MESSAGE_ERROR_SCREEN = 14
+UI_WIN_MESSAGE_SCREEN = 11
 
 
 def main():
@@ -52,9 +49,12 @@ def main():
   pygame.display.set_caption('Toulouse')
 
   # Start Up with Splash Screen
-  os_state = UI_WIN_CURVES_SELECTION_SCREEN
+  os_state = UI_WIN_MESSAGE_SCREEN
   prev_state = UI_WIN_HOME_SCREEN
   loaded_new_state = 0
+
+  # Message Display
+  message = {}
 
   # Image Loading
   img_splash = pygame.image.load('splash.png').convert_alpha()
@@ -311,26 +311,22 @@ def main():
 
       ui.utilities.Header(DISPLAYSURF, "Messages", ui.colours.WHITE)
 
-    elif (os_state == UI_WIN_MESSAGE_INFO_SCREEN):
+    elif (os_state == UI_WIN_MESSAGE_SCREEN):
       if (not loaded_new_state):
-        print("----> Displaying Message (Info) Screen")
+        print("----> Displaying Message Screen")
         loaded_new_state = 1
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
-    elif (os_state == UI_WIN_MESSAGE_SUCCESS_SCREEN):
-      if (not loaded_new_state):
-        print("----> Displaying Message (Success) Screen")
-        loaded_new_state = 1
-        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
-    elif (os_state == UI_WIN_MESSAGE_WARNING_SCREEN):
-      if (not loaded_new_state):
-        print("----> Displaying Message (Warning) Screen")
-        loaded_new_state = 1
-        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
-    elif (os_state == UI_WIN_MESSAGE_ERROR_SCREEN):
-      if (not loaded_new_state):
-        print("----> Displaying Message (Error) Screen")
-        loaded_new_state = 1
-        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
+
+        messages_buttons = ui.messages.message_display(DISPLAYSURF, ui.messages.BUTTONS[2])
+
+      # Button Logic
+      if (mouseClicked):
+        for button in messages_buttons:
+          if button["target"].collidepoint((mousex, mousey)):
+            if (button["value"] == ui.messages.BUTTON_ACKNOWLEDGE):
+              print("Acknowledged Message")
+            elif (button["value"] == ui.messages.BUTTON_CLEAR):
+              print("Cleared Message")
     else: # Display Home Screen
       if (not loaded_new_state):
         print("----> Displaying Home Screen")
