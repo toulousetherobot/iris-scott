@@ -3,20 +3,23 @@ Created on April 10, 2017
 @author: aramael
 """
 import pygame
-from pygame.locals import *
+# from pygame.locals import *
 from pygame import gfxdraw # used in Main Menu
 from math import ceil # used in Main Menu
 
-import ui
-from ui.utilities import FilledRoundedRectangle, FilledCircle
+from . import settings
+from . import fonts
+from . import colours
 
-BUTTON_TITLE_FONT = ui.fonts.SF_UI_TEXT_LIGHT_HEADER
-BUTTON_FOOTNOTE_FONT = ui.fonts.SF_UI_TEXT_LIGHT_FOOTNOTE
-BUTTON_TEXT_COLOUR = ui.colours.WHITE
-BUTTON_BG_COLOUR = ui.colours.BUTTON_BG_COLOR
-BUTTON_YSTART = 30
+from .utilities import FilledRoundedRectangle, FilledCircle
+
+BUTTON_TITLE_FONT = fonts.SF_UI_TEXT_LIGHT_HEADER
+BUTTON_FOOTNOTE_FONT = fonts.SF_UI_TEXT_LIGHT_FOOTNOTE
+BUTTON_TEXT_COLOUR = colours.WHITE
+BUTTON_BG_COLOUR = colours.BUTTON_BG_COLOR
+BUTTON_YSTART = settings.UI_MARGIN_TOP
 BUTTON_XSTART = 30
-BUTTON_XSIZE = ui.WINDOWWIDTH-ui.UI_MARGIN*2
+BUTTON_XSIZE = settings.WINDOWWIDTH-settings.UI_MARGIN_LEFT-settings.UI_MARGIN_RIGHT
 BUTTON_YSIZE = 56
 BUTTON_YGAP = 6
 BUTTON_TEXT_MARGIN = BUTTON_YSIZE + BUTTON_YGAP

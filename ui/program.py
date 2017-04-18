@@ -5,17 +5,19 @@ Created on April 9, 2017
 import pygame
 from pygame.locals import *
 
-import ui.fonts
-import ui.colours
+from . import settings
+from . import fonts
+from . import colours
+
 from ui.utilities import FilledRoundedRectangle
 
-BUTTON_TITLE_FONT = ui.fonts.SF_UI_TEXT_LIGHT_HEADER
-BUTTON_FOOTNOTE_FONT = ui.fonts.SF_UI_TEXT_LIGHT_FOOTNOTE
-BUTTON_TEXT_COLOUR = ui.colours.PHOSPHORIC_TEXT_COLOR
-BUTTON_BG_COLOUR = ui.colours.PHOSPHORIC_COLORS
-BUTTON_YSTART = 30
-BUTTON_XSTART = 30
-BUTTON_XSIZE = ui.WINDOWWIDTH-ui.UI_MARGIN*2
+BUTTON_TITLE_FONT = fonts.SF_UI_TEXT_LIGHT_HEADER
+BUTTON_FOOTNOTE_FONT = fonts.SF_UI_TEXT_LIGHT_FOOTNOTE
+BUTTON_TEXT_COLOUR = colours.PHOSPHORIC_TEXT_COLOR
+BUTTON_BG_COLOUR = colours.PHOSPHORIC_COLORS
+BUTTON_YSTART = settings.UI_MARGIN_TOP
+BUTTON_XSTART = settings.UI_MARGIN_LEFT
+BUTTON_XSIZE = settings.WINDOWWIDTH-settings.UI_MARGIN*2
 BUTTON_YSIZE = 56
 BUTTON_YGAP = 6
 BUTTON_TEXT_MARGIN = 2 * BUTTON_YGAP

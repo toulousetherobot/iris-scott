@@ -5,6 +5,10 @@ Created on April 9, 2017
 import pygame
 from pygame.locals import *
 
+from . import settings
+from . import fonts
+from . import colours
+
 import ui.fonts
 import ui.colours
 from ui.utilities import FilledRoundedRectangle

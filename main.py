@@ -10,16 +10,6 @@ from datetime import datetime, timedelta
 
 # UI Constants & Helper Functions
 import ui
-import ui.passcode
-import ui.mainmenu
-import ui.program
-import ui.colours
-import ui.fonts
-import ui.utilities
-import ui.curvesselection
-import ui.messages
-import ui.jog
-import ui.home
 from ui.passcode import *
 
 # Windows
@@ -42,7 +32,7 @@ def main():
   FPSCLOCK = pygame.time.Clock()
   
   # Screen Size
-  DISPLAYSURF = pygame.display.set_mode((ui.WINDOWWIDTH, ui.WINDOWHEIGHT))
+  DISPLAYSURF = pygame.display.set_mode((settings.WINDOWWIDTH, settings.WINDOWHEIGHT))
   DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
   # os.putenv('SDL_FBDEV', '/dev/fb1')
 
@@ -139,11 +129,11 @@ def main():
         passcode_title = "Enter Passcode"
 
       # Render Passcode Header
-      passcode_text_blackout_rect = pygame.Rect(0, 0, ui.WINDOWWIDTH, ui.UI_MARGIN_TOP)
+      passcode_text_blackout_rect = pygame.Rect(0, 0, settings.WINDOWWIDTH, settings.UI_MARGIN_TOP)
       pygame.draw.rect(DISPLAYSURF, ui.colours.SCREEN_BG_COLOR, passcode_text_blackout_rect)
       passcode_text_surf = ui.fonts.SF_UI_DISPLAY_HEAVY.render(passcode_title, True, ui.colours.WHITE, ui.colours.BLACK)
       passcode_text_rect = passcode_text_surf.get_rect()
-      passcode_text_rect.center = (ui.WINDOWWIDTH/2, ui.UI_MARGIN_TOP/2)
+      passcode_text_rect.center = (settings.WINDOWWIDTH/2, settings.UI_MARGIN_TOP/2)
       DISPLAYSURF.blit(passcode_text_surf, passcode_text_rect)
 
       # Button Logic
@@ -182,13 +172,13 @@ def main():
 
         cancel_text_surf = ui.fonts.SF_UI_DISPLAY_HEAVY.render("Cancel", True, ui.colours.WHITE, ui.colours.BLACK)
         cancel_text_rect = cancel_text_surf.get_rect()
-        cancel_text_rect.midleft = (ui.UI_MARGIN, ui.UI_MARGIN_TOP/2)
+        cancel_text_rect.midleft = (settings.UI_MARGIN, settings.UI_MARGIN_TOP/2)
         DISPLAYSURF.blit(cancel_text_surf, cancel_text_rect)
         menu_buttons.append({"target": cancel_text_rect, "value": 4})
 
         for i in range(len(ui.mainmenu.BUTTONS)):
           menu_buttons.append(ui.mainmenu.rounded_button(DISPLAYSURF, ui.mainmenu.BUTTONS[i], 
-            ui.UI_MARGIN, ui.WINDOWHEIGHT-ui.UI_MARGIN_BOTTOM-(ui.mainmenu.BUTTON_YSIZE+ui.mainmenu.BUTTON_YGAP)*(i+1)))
+            settings.UI_MARGIN, settings.WINDOWHEIGHT-settings.UI_MARGIN_BOTTOM-(ui.mainmenu.BUTTON_YSIZE+ui.mainmenu.BUTTON_YGAP)*(i+1)))
 
       # Button Logic
       if (mouseClicked):
@@ -216,7 +206,7 @@ def main():
         ui.utilities.Header(DISPLAYSURF, "Cartesian Jog", ui.colours.WHITE)
 
         for i in range(len(ui.jog.AXIS_CARTESIAN)):
-          axis_buttons.append(ui.jog.axis_controller(DISPLAYSURF, ui.jog.AXIS_CARTESIAN[i], ui.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
+          axis_buttons.append(ui.jog.axis_controller(DISPLAYSURF, ui.jog.AXIS_CARTESIAN[i], settings.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
     elif (os_state == UI_WIN_MANUAL_JOG_JOINT_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Manual Jog (Joint Angles) Screen")
@@ -228,7 +218,7 @@ def main():
         ui.utilities.Header(DISPLAYSURF, "Joint Jog", ui.colours.WHITE)
 
         for i in range(len(ui.jog.AXIS_JOINT)):
-          axis_buttons.append(ui.jog.axis_controller(DISPLAYSURF, ui.jog.AXIS_JOINT[i], ui.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
+          axis_buttons.append(ui.jog.axis_controller(DISPLAYSURF, ui.jog.AXIS_JOINT[i], settings.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
     elif (os_state == UI_WIN_PROGRAM_SELECTION_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Program Selection Screen")
@@ -242,7 +232,7 @@ def main():
 
         for i in range(len(ui.program.BUTTONS)):
           program_buttons.append(ui.program.rounded_button(DISPLAYSURF, ui.program.BUTTONS[i], 
-            ui.UI_MARGIN, ui.UI_MARGIN_TOP + (ui.program.BUTTON_YSIZE+ui.program.BUTTON_YGAP)*i))
+            settings.UI_MARGIN, settings.UI_MARGIN_TOP + (ui.program.BUTTON_YSIZE+ui.program.BUTTON_YGAP)*i))
 
       # Button Logic
       if (mouseClicked):
@@ -286,14 +276,14 @@ def main():
 
         # Set Maximum Scroll Y Max
         scroll_y_max = -(ui.curvesselection.BUTTON_YSIZE+ui.curvesselection.BUTTON_YGAP)*len(files)
-        scroll_y_max += ui.WINDOWHEIGHT-ui.UI_MARGIN_TOP
+        scroll_y_max += settings.WINDOWHEIGHT-settings.UI_MARGIN_TOP
 
       # Draw Buttons Once
       files_buttons = []
 
       for i in range(len(files)):
         files_buttons.append(ui.curvesselection.rounded_button(DISPLAYSURF, files[i], 
-          ui.UI_MARGIN, ui.UI_MARGIN_TOP + scroll_y +(ui.curvesselection.BUTTON_YSIZE+ui.curvesselection.BUTTON_YGAP)*i))
+          settings.UI_MARGIN, settings.UI_MARGIN_TOP + scroll_y +(ui.curvesselection.BUTTON_YSIZE+ui.curvesselection.BUTTON_YGAP)*i))
 
       ui.utilities.Header(DISPLAYSURF, "Programs", ui.colours.PHOSPHORIC_LIGHT_COLOR)
 
@@ -317,13 +307,13 @@ def main():
 
         # Set Maximum Scroll Y Max
         scroll_y_max = -(ui.messages.BUTTON_YSIZE+ui.messages.BUTTON_YGAP)*len(ui.messages.BUTTONS)
-        scroll_y_max += ui.WINDOWHEIGHT-ui.UI_MARGIN_TOP
+        scroll_y_max += settings.WINDOWHEIGHT-settings.UI_MARGIN_TOP
 
       DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
 
       for i in range(len(ui.messages.BUTTONS)):
         messages_buttons.append(ui.messages.rounded_button(DISPLAYSURF, ui.messages.BUTTONS[i], 
-          ui.UI_MARGIN, ui.UI_MARGIN_TOP + scroll_y + (ui.messages.BUTTON_YSIZE+ui.messages.BUTTON_YGAP)*(i)))
+          settings.UI_MARGIN, settings.UI_MARGIN_TOP + scroll_y + (ui.messages.BUTTON_YSIZE+ui.messages.BUTTON_YGAP)*(i)))
 
       ui.utilities.Header(DISPLAYSURF, "Messages", ui.colours.WHITE)
     elif (os_state == UI_WIN_MESSAGE_SCREEN):
@@ -352,11 +342,11 @@ def main():
       ui.utilities.Header(DISPLAYSURF, "", ui.colours.WHITE)
 
       for i in range(len(ui.home.GLANCES)):
-        ui.home.glance(DISPLAYSURF, ui.home.GLANCES[i], ui.UI_MARGIN_TOP+(ui.home.GLANCE_YSIZE+ui.home.GLANCE_YGAP)*i)
+        ui.home.glance(DISPLAYSURF, ui.home.GLANCES[i], settings.UI_MARGIN_TOP+(ui.home.GLANCE_YSIZE+ui.home.GLANCE_YGAP)*i)
 
     # Redraw the screen and wait a clock tick.
     pygame.display.update()
-    FPSCLOCK.tick(ui.FPS)
+    FPSCLOCK.tick(ui.settings.FPS)
 
 if __name__ == '__main__':
     main()

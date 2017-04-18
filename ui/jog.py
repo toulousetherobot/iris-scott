@@ -5,14 +5,16 @@ Created on April 17, 2017
 import pygame
 from pygame.locals import *
 
-import ui.fonts
-import ui.colours
+from . import settings
+from . import fonts
+from . import colours
+
 from ui.utilities import FilledRoundedRectangle, FilledCircle, FillGradient
 
-CONTROLLER_VALUE_FONT = ui.fonts.SF_UI_DISPLAY_LIGHT_XL
-CONTROLLER_TAG_FONT = ui.fonts.SF_UI_TEXT_LIGHT_FOOTNOTE
+CONTROLLER_VALUE_FONT = fonts.SF_UI_DISPLAY_LIGHT_XL
+CONTROLLER_TAG_FONT = fonts.SF_UI_TEXT_LIGHT_FOOTNOTE
 CONTROLLER_CIRC_RADIUS = 36
-CONTROLLER_XSIZE = ui.WINDOWWIDTH-ui.UI_MARGIN*2
+CONTROLLER_XSIZE = settings.WINDOWWIDTH - settings.UI_MARGIN*2
 CONTROLLER_YSIZE = 65
 CONTROLLER_YGAP = 6
 
@@ -35,21 +37,21 @@ AXIS_CARTESIAN = [{
 		"max": 0.000,
 		"min": 17.000,
 		"change": 0.100,
-		"color": ui.colours.PHOSPHORIC_COLORS,
+		"color": colours.PHOSPHORIC_COLORS,
 	},{
 		"id": AXIS_Y,
 		"name": "Y Coordinate",
 		"max": 0.000,
 		"min": 17.000,
 		"change": 0.100,
-		"color": ui.colours.PINK_COLORS,
+		"color": colours.PINK_COLORS,
 	},{
 		"id": AXIS_Z,
 		"name": "Z Coordinate",
 		"max": 0.000,
 		"min": 17.000,
 		"change": 0.100,
-		"color": ui.colours.CYAN_COLORS,
+		"color": colours.CYAN_COLORS,
 	}]
 
 AXIS_JOINT = [{
@@ -58,24 +60,24 @@ AXIS_JOINT = [{
 		"max": 0.000,
 		"min": 17.000,
 		"change": 0.100,
-		"color": ui.colours.PHOSPHORIC_COLORS,
+		"color": colours.PHOSPHORIC_COLORS,
 	},{
 		"id": AXIS_THETA2,
 		"name": "Theta 2 Angle",
 		"max": 0.000,
 		"min": 17.000,
 		"change": 0.100,
-		"color": ui.colours.PINK_COLORS,
+		"color": colours.PINK_COLORS,
 	},{
 		"id": AXIS_D3,
 		"name": "Z Distance",
 		"max": 0.000,
 		"min": 17.000,
 		"change": 0.100,
-		"color": ui.colours.CYAN_COLORS,
+		"color": colours.CYAN_COLORS,
 	}]
 
-def axis_controller(surface, controller, y, x=ui.UI_MARGIN, width=CONTROLLER_XSIZE, height=CONTROLLER_YSIZE,
+def axis_controller(surface, controller, y, x=settings.UI_MARGIN, width=CONTROLLER_XSIZE, height=CONTROLLER_YSIZE,
 	value_font=CONTROLLER_VALUE_FONT, tag_font=CONTROLLER_TAG_FONT, radius=CONTROLLER_CIRC_RADIUS):
 
 	rect         = Rect((x,y,width,height))

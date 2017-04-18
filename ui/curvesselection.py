@@ -5,16 +5,18 @@ Created on April 15, 2017
 import pygame
 from pygame.locals import *
 
-import ui.fonts
-import ui.colours
+from . import settings
+from . import fonts
+from . import colours
+
 from ui.utilities import FilledRoundedRectangle
 
 CURVES_FOLDER = "curves"
 
-BUTTON_TITLE_FONT = ui.fonts.SF_UI_TEXT_LIGHT_FOOTNOTE
-BUTTON_TEXT_COLOUR = ui.colours.PHOSPHORIC_TEXT_COLOR
-BUTTON_BG_COLOUR = ui.colours.PHOSPHORIC_COLORS
-BUTTON_XSIZE = ui.WINDOWWIDTH - ui.UI_MARGIN*2
+BUTTON_TITLE_FONT = fonts.SF_UI_TEXT_LIGHT_FOOTNOTE
+BUTTON_TEXT_COLOUR = colours.PHOSPHORIC_TEXT_COLOR
+BUTTON_BG_COLOUR = colours.PHOSPHORIC_COLORS
+BUTTON_XSIZE = settings.WINDOWWIDTH - settings.UI_MARGIN*2
 BUTTON_YSIZE = 36
 BUTTON_YGAP = 4
 BUTTON_TEXT_MARGIN = 2 * BUTTON_YGAP

@@ -6,35 +6,37 @@ import pygame
 from pygame.locals import *
 from copy import deepcopy
 
-import ui.fonts
-import ui.colours
+from . import settings
+from . import fonts
+from . import colours
+
 from ui.utilities import FillGradient
 
-GLANCE_VALUE_FONT = ui.fonts.SF_UI_DISPLAY_LIGHT_XL
-GLANCE_ID_FONT = ui.fonts.SF_UI_TEXT_LIGHT_HEADER
-GLANCE_XSIZE = ui.WINDOWWIDTH-ui.UI_MARGIN*2
+GLANCE_VALUE_FONT = fonts.SF_UI_DISPLAY_LIGHT_XL
+GLANCE_ID_FONT = fonts.SF_UI_TEXT_LIGHT_HEADER
+GLANCE_XSIZE = settings.WINDOWWIDTH - settings.UI_MARGIN*2
 GLANCE_YSIZE = 48
 GLANCE_YGAP = 4
 
 GLANCES = [{
 		"value": "100/1901",
 		"identifier": "FRM",
-		"color": ui.colours.WHITE,
+		"color": colours.WHITE,
 	},{
 		"value": "11.246",
 		"identifier": "X",
-		"color": ui.colours.PHOSPHORIC_COLORS,
+		"color": colours.PHOSPHORIC_COLORS,
 	},{
 		"value": "9.901",
 		"identifier": "Y",
-		"color": ui.colours.PINK_COLORS,
+		"color": colours.PINK_COLORS,
 	},{
 		"value": "-0.001",
 		"identifier": "Z",
-		"color": ui.colours.CYAN_COLORS,
+		"color": colours.CYAN_COLORS,
 	}]
 
-def glance(surface, glance, y, x=ui.UI_MARGIN, width=GLANCE_XSIZE, height=GLANCE_YSIZE,
+def glance(surface, glance, y, x=settings.UI_MARGIN, width=GLANCE_XSIZE, height=GLANCE_YSIZE,
 	value_font=GLANCE_VALUE_FONT, identifier_font=GLANCE_ID_FONT):
 
 	rect         = Rect((x,y,width,height))
