@@ -1,5 +1,6 @@
 from pygame import *
 from copy import deepcopy
+from datetime import datetime
 
 from . import settings
 from . import fonts
@@ -12,8 +13,16 @@ def Header(surface, title, color, bg_color = colours.SCREEN_BG_COLOR):
 
     title_text_surf = fonts.SF_UI_DISPLAY_HEAVY.render(title, True, color, bg_color)
     title_text_rect = title_text_surf.get_rect()
-    title_text_rect.midleft = (settings.UI_MARGIN, settings.UI_MARGIN_TOP/2)
+    title_text_rect.midleft = (settings.UI_MARGIN_LEFT, settings.UI_MARGIN_TOP/2)
     surface.blit(title_text_surf, title_text_rect)
+
+    # Time
+    now = datetime.now()
+    title_text_surf = fonts.SF_UI_DISPLAY_LIGHT.render(now.strftime(settings.TIME_STRING), True, color, bg_color)
+    title_text_rect = title_text_surf.get_rect()
+    title_text_rect.midright = (settings.WINDOWWIDTH -settings.UI_MARGIN_RIGHT, settings.UI_MARGIN_TOP/2)
+    surface.blit(title_text_surf, title_text_rect)
+
 
 def FilledCircle(surface, circ, color):
 
