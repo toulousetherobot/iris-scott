@@ -1,5 +1,5 @@
 """
-Created on April 9, 2017
+Created on April 17, 2017
 @author: aramael
 """
 import pygame
@@ -19,6 +19,9 @@ CONTROLLER_YGAP = 6
 AXIS_X = 1
 AXIS_Y = 2
 AXIS_Z = 3
+
+AXIS_THETA1 = 4
+AXIS_THETA2 = 5
 
 BUTTON_ADD = 1
 BUTTON_ADD_ICN = "plus_icn_15.png"
@@ -42,6 +45,29 @@ AXIS_CARTESIAN = [{
 	},{
 		"id": AXIS_Z,
 		"name": "Z Coordinate",
+		"max": 0.000,
+		"min": 17.000,
+		"change": 0.100,
+		"color": ui.colours.CYAN_COLORS,
+	}]
+
+AXIS_JOINT = [{
+		"id": AXIS_THETA1,
+		"name": "Theta 1 Angle",
+		"max": 0.000,
+		"min": 17.000,
+		"change": 0.100,
+		"color": ui.colours.PHOSPHORIC_COLORS,
+	},{
+		"id": AXIS_THETA2,
+		"name": "Theta 2 Angle",
+		"max": 0.000,
+		"min": 17.000,
+		"change": 0.100,
+		"color": ui.colours.PINK_COLORS,
+	},{
+		"id": AXIS_Z,
+		"name": "Z Distance",
 		"max": 0.000,
 		"min": 17.000,
 		"change": 0.100,
@@ -72,7 +98,7 @@ def axis_controller(surface, controller, y, x=ui.UI_MARGIN, width=CONTROLLER_XSI
 	img_splash = pygame.image.load(BUTTON_ADD_ICN).convert_alpha()
 	img_splash_rect = img_splash.get_rect()
 	mask.blit(img_splash, (width-radius/2-img_splash_rect.width/2, height/2-img_splash_rect.height/2))
-	
+
 	# Value
 	button_text_surf = value_font.render("11.246", True, color)
 	button_text_rect = button_text_surf.get_rect()

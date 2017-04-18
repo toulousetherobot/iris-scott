@@ -222,6 +222,14 @@ def main():
         print("----> Displaying Manual Jog (Joint Angles) Screen")
         loaded_new_state = 1
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
+        # Draw Buttons Once
+        axis_buttons = []
+
+        ui.utilities.Header(DISPLAYSURF, "Joint Jog", ui.colours.WHITE)
+
+        for i in range(len(ui.jog.AXIS_JOINT)):
+          axis_buttons.append(ui.jog.axis_controller(DISPLAYSURF, ui.jog.AXIS_JOINT[i], ui.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
+
     elif (os_state == UI_WIN_PROGRAM_SELECTION_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Program Selection Screen")
