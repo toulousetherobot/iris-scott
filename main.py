@@ -19,7 +19,6 @@ def main():
   
   # Screen Size
   DISPLAYSURF = pygame.display.set_mode((settings.WINDOWWIDTH, settings.WINDOWHEIGHT))
-  DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
   # os.putenv('SDL_FBDEV', '/dev/fb1')
 
   mousex = 0 # used to store x coordinate of mouse event
@@ -71,22 +70,19 @@ def main():
 
     # Window Tree
     if (toulouse.page == ui.state.Page.SPLASH_SCREEN):
-      if (not loaded_new_state):
+      if (not toulouse.loaded_new_state):
         print("----> Displaying Splash Screen")
         splash_start = datetime.now() + timedelta(seconds=SPLASH_TIMEOUT)
-        loaded_new_state = 1
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
-
-      DISPLAYSURF.blit(img_splash, (20, 59))
+        DISPLAYSURF.blit(img_splash, (20, 59))
+        toulouse.loaded_screen(ui.state.Page.SPLASH_SCREEN)
 
       # Timer to Passcode Lock
       if (datetime.now() > splash_start):
-        os_state = ui.state.Page.PASSCODE_LOCK_SCREEN
-        loaded_new_state = 0
+        toulouse.load_screen(ui.state.Page.PASSCODE_LOCK_SCREEN)
     elif (toulouse.page == ui.state.Page.PASSCODE_LOCK_SCREEN):
-      if (not loaded_new_state):
+      if (not toulouse.loaded_new_state):
         print("----> Displaying Passcode Lock Screen")
-        loaded_new_state = 1
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR) # Reset Frame
 
         passcode_title = "Enter Passcode"
@@ -104,6 +100,7 @@ def main():
           elif len(row) == 1:
             passcode_buttons.append(rounded_button(DISPLAYSURF, row[0], buttonx, buttony, width=PASSCODE_BUTTON_XSIZE*3+PASSCODE_BUTTON_XGAP*2))
           buttonx = PASSCODE_BUTTON_XSTART
+        toulouse.loaded_screen(ui.state.Page.PASSCODE_LOCK_SCREEN)
 
       # Update Passcode Entry
       if (len(passcode_attempt) > 0):
