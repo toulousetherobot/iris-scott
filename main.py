@@ -26,9 +26,8 @@ def main():
   mousey = 0 # used to store y coordinate of mouse event
   pygame.display.set_caption('Toulouse')
 
-  # Start Up with Splash Screen
-  os_state = ui.state.Page.UI_WIN_MESSAGE_SCREEN
-  prev_state = ui.state.Page.UI_WIN_HOME_SCREEN
+  # Initalise OS Logic State
+  toulouse = ui.state.Toulouse()
   loaded_new_state = 0
 
   # Message Display
@@ -71,7 +70,7 @@ def main():
         pygame.event.clear(pygame.MOUSEBUTTONUP)
 
     # Window Tree
-    if (os_state == ui.state.Page.UI_WIN_SPLASH_SCREEN):
+    if (toulouse.page == ui.state.Page.SPLASH_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Splash Screen")
         splash_start = datetime.now() + timedelta(seconds=SPLASH_TIMEOUT)
@@ -82,9 +81,9 @@ def main():
 
       # Timer to Passcode Lock
       if (datetime.now() > splash_start):
-        os_state = ui.state.Page.UI_WIN_PASSCODE_LOCK_SCREEN
+        os_state = ui.state.Page.PASSCODE_LOCK_SCREEN
         loaded_new_state = 0
-    elif (os_state == ui.state.Page.UI_WIN_PASSCODE_LOCK_SCREEN):
+    elif (toulouse.page == ui.state.Page.PASSCODE_LOCK_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Passcode Lock Screen")
         loaded_new_state = 1
@@ -139,15 +138,15 @@ def main():
         # Passcode Entered Successfully
         if (passcode_attempt == passcode):
           passcode_failed_attempts = 0
-          os_state = ui.state.Page.UI_WIN_HOME_SCREEN
-          prev_state = ui.state.Page.UI_WIN_PASSCODE_LOCK_SCREEN
+          os_state = ui.state.Page.HOME_SCREEN
+          prev_state = ui.state.Page.PASSCODE_LOCK_SCREEN
           loaded_new_state = 0
         else:
           passcode_failed_attempts += 1
           print("Failed Attempts: ", passcode_failed_attempts)
           passcode_title = "Wrong Passcode"
         del passcode_attempt[:]
-    elif (os_state == ui.state.Page.UI_WIN_MAIN_MENU_SCREEN):
+    elif (toulouse.page == ui.state.Page.MAIN_MENU_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Main Menu Screen")
         loaded_new_state = 1
@@ -175,13 +174,13 @@ def main():
             if (button["value"] == ui.mainmenu.BUTTON_RESTART):
               print("      Restarting. Immediatley")
             if (button["value"] == ui.mainmenu.BUTTON_LOCK):
-              os_state = ui.state.Page.UI_WIN_PASSCODE_LOCK_SCREEN
+              os_state = ui.state.Page.PASSCODE_LOCK_SCREEN
               loaded_new_state = 0
             if (button["value"] == ui.mainmenu.BUTTON_CANCEL):
               os_state = prev_state
               loaded_new_state = 0
-              prev_state = ui.state.Page.UI_WIN_MAIN_MENU_SCREEN
-    elif (os_state == ui.state.Page.UI_WIN_MANUAL_JOG_CARTESIAN_SCREEN):
+              prev_state = ui.state.Page.MAIN_MENU_SCREEN
+    elif (toulouse.page == ui.state.Page.MANUAL_JOG_CARTESIAN_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Manual Jog (Cartesian) Screen")
         loaded_new_state = 1
@@ -193,7 +192,7 @@ def main():
 
         for i in range(len(ui.jog.AXIS_CARTESIAN)):
           axis_buttons.append(ui.jog.axis_controller(DISPLAYSURF, ui.jog.AXIS_CARTESIAN[i], settings.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
-    elif (os_state == ui.state.Page.UI_WIN_MANUAL_JOG_JOINT_SCREEN):
+    elif (toulouse.page == ui.state.Page.MANUAL_JOG_JOINT_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Manual Jog (Joint Angles) Screen")
         loaded_new_state = 1
@@ -205,7 +204,7 @@ def main():
 
         for i in range(len(ui.jog.AXIS_JOINT)):
           axis_buttons.append(ui.jog.axis_controller(DISPLAYSURF, ui.jog.AXIS_JOINT[i], settings.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
-    elif (os_state == ui.state.Page.UI_WIN_PROGRAM_SELECTION_SCREEN):
+    elif (toulouse.page == ui.state.Page.PROGRAM_SELECTION_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Program Selection Screen")
         loaded_new_state = 1
@@ -226,21 +225,21 @@ def main():
           if button["target"].collidepoint((mousex, mousey)):
             if (button["value"] == ui.program.BUTTON_CARICATURE):
               print("      Swapping to Photo Capture Screen")
-              os_state = ui.state.Page.UI_WIN_PHOTO_CAPTURE_SCREEN
+              os_state = ui.state.Page.PHOTO_CAPTURE_SCREEN
               loaded_new_state = 0
-              prev_state = ui.state.Page.UI_WIN_PROGRAM_SELECTION_SCREEN
+              prev_state = ui.state.Page.PROGRAM_SELECTION_SCREEN
 
             if (button["value"] == ui.program.BUTTON_CARICATURE):
               print("      Swapping to List Programs")
-              os_state = ui.state.Page.UI_WIN_CURVES_SELECTION_SCREEN
+              os_state = ui.state.Page.CURVES_SELECTION_SCREEN
               loaded_new_state = 0
-              prev_state = ui.state.Page.UI_WIN_PROGRAM_SELECTION_SCREEN
-    elif (os_state == ui.state.Page.UI_WIN_PHOTO_CAPTURE_SCREEN):
+              prev_state = ui.state.Page.PROGRAM_SELECTION_SCREEN
+    elif (toulouse.page == ui.state.Page.PHOTO_CAPTURE_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Photo Capture Screen")
         loaded_new_state = 1
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
-    elif (os_state == ui.state.Page.UI_WIN_CURVES_SELECTION_SCREEN):
+    elif (toulouse.page == ui.state.Page.CURVES_SELECTION_SCREEN):
       DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
       if (not loaded_new_state):
         print("----> Displaying Curves Selection Screen")
@@ -279,10 +278,10 @@ def main():
           if button["target"].collidepoint((mousex, mousey)):
             if (button["value"] == ui.curvesselection.BUTTON_FILE):
               print("      Starting Processing on Curves File:", button["action"])
-              os_state = ui.state.Page.UI_WIN_HOME_SCREEN
+              os_state = ui.state.Page.HOME_SCREEN
               loaded_new_state = 0
-              prev_state = ui.state.Page.UI_WIN_CURVES_SELECTION_SCREEN
-    elif (os_state == ui.state.Page.UI_WIN_MESSAGES_LIST_SCREEN):
+              prev_state = ui.state.Page.CURVES_SELECTION_SCREEN
+    elif (toulouse.page == ui.state.Page.MESSAGES_LIST_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Message List Screen")
         loaded_new_state = 1
@@ -302,7 +301,7 @@ def main():
           settings.UI_MARGIN, settings.UI_MARGIN_TOP + scroll_y + (ui.messages.BUTTON_YSIZE+ui.messages.BUTTON_YGAP)*(i)))
 
       ui.utilities.Header(DISPLAYSURF, "Messages", ui.colours.WHITE)
-    elif (os_state == ui.state.Page.UI_WIN_MESSAGE_SCREEN):
+    elif (toulouse.page == ui.state.Page.MESSAGE_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Message Screen")
         loaded_new_state = 1
