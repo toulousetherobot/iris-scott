@@ -14,7 +14,7 @@ from ui.utilities import FilledRoundedRectangle, FilledCircle, FillGradient
 CONTROLLER_VALUE_FONT = fonts.SF_UI_DISPLAY_LIGHT_XL
 CONTROLLER_TAG_FONT = fonts.SF_UI_TEXT_LIGHT_FOOTNOTE
 CONTROLLER_CIRC_RADIUS = 36
-CONTROLLER_XSIZE = settings.WINDOWWIDTH - settings.UI_MARGIN*2
+CONTROLLER_XSIZE = settings.WINDOWWIDTH - settings.UI_MARGIN_LEFT - settings.UI_MARGIN_RIGHT
 CONTROLLER_YSIZE = 65
 CONTROLLER_YGAP = 6
 
@@ -116,5 +116,3 @@ def axis_controller(surface, controller, y, x=settings.UI_MARGIN, width=CONTROLL
 
 	gradient.blit(mask, (0, 0), None, BLEND_RGBA_MULT)
 	surface.blit(gradient, pos)
-
-	# return {"target": button_rect, "value": controller["id"]}
