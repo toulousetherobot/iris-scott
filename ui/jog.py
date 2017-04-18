@@ -22,6 +22,7 @@ AXIS_Z = 3
 
 AXIS_THETA1 = 4
 AXIS_THETA2 = 5
+AXIS_D3     = 6
 
 BUTTON_ADD = 1
 BUTTON_ADD_ICN = "plus_icn_15.png"
@@ -66,7 +67,7 @@ AXIS_JOINT = [{
 		"change": 0.100,
 		"color": ui.colours.PINK_COLORS,
 	},{
-		"id": AXIS_Z,
+		"id": AXIS_D3,
 		"name": "Z Distance",
 		"max": 0.000,
 		"min": 17.000,

@@ -19,6 +19,7 @@ import ui.utilities
 import ui.curvesselection
 import ui.messages
 import ui.jog
+import ui.home
 from ui.passcode import *
 
 # Windows
@@ -216,7 +217,6 @@ def main():
 
         for i in range(len(ui.jog.AXIS_CARTESIAN)):
           axis_buttons.append(ui.jog.axis_controller(DISPLAYSURF, ui.jog.AXIS_CARTESIAN[i], ui.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
-
     elif (os_state == UI_WIN_MANUAL_JOG_JOINT_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Manual Jog (Joint Angles) Screen")
@@ -229,7 +229,6 @@ def main():
 
         for i in range(len(ui.jog.AXIS_JOINT)):
           axis_buttons.append(ui.jog.axis_controller(DISPLAYSURF, ui.jog.AXIS_JOINT[i], ui.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
-
     elif (os_state == UI_WIN_PROGRAM_SELECTION_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Program Selection Screen")
@@ -347,7 +346,13 @@ def main():
       if (not loaded_new_state):
         print("----> Displaying Home Screen")
         loaded_new_state = 1
-        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
+      DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
+
+      # Draw Buttons Once
+      ui.utilities.Header(DISPLAYSURF, "", ui.colours.WHITE)
+
+      for i in range(len(ui.home.GLANCES)):
+        ui.home.glance(DISPLAYSURF, ui.home.GLANCES[i], ui.UI_MARGIN_TOP+(ui.home.GLANCE_YSIZE+ui.home.GLANCE_YGAP)*i)
 
     # Redraw the screen and wait a clock tick.
     pygame.display.update()
