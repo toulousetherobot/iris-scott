@@ -5,6 +5,7 @@ Created on April 17, 2017
 from enum import Enum
 from datetime import datetime
 from copy import deepcopy
+from math import cos, sin
 
 class Mode(Enum):
 	STOP_CATEGORY_ZERO = 0
@@ -45,6 +46,9 @@ class State(object):
 			time=self.timestamp, mode=self.mode, program=self.program, theta1=self.theta1, theta2=self.theta2, d3=self.d3)
 
 class Toulouse(object):
+	SHOULDER_PAN_LINK_LENGTH = 8.75
+	ELBOW_PAN_LINK_LENGTH = 8.75
+
 	def __init__(self):
 
 		self.mode = Mode.NO_MODE_CHOSEN
@@ -60,6 +64,7 @@ class Toulouse(object):
 		self.previous_OS_states = []
 
 		# Set Up Authorisation
+		self.locked = True
 		self.passcode = [1, 9, 0, 1]
 		self.passcode_failed_attempts_counter = 0
 
@@ -115,11 +120,27 @@ class Toulouse(object):
 			# Passcode Entered Successfully
 			if (passcode_attempt == self.passcode):
 				self.passcode_failed_attempts_counter = 0
+				self.locked = False
 				return self.load_screen(Page.HOME_SCREEN)
 			else:
 				self.passcode_failed_attempts_counter += 1
 				return False
 		return -1
+
+	# X
+	@property
+	def X(self):
+		return Toulouse.SHOULDER_PAN_LINK_LENGTH*cos(self.theta1)+Toulouse.ELBOW_PAN_LINK_LENGTH*cos(self.theta1-self.theta2)
+
+	# Y
+	@property
+	def Y(self):
+		return Toulouse.SHOULDER_PAN_LINK_LENGTH*sin(self.theta1)+Toulouse.ELBOW_PAN_LINK_LENGTH*sin(self.theta1-self.theta2)
+
+	# Z
+	@property
+	def Z(self):
+		return self.d3
 
 	# Space to Load Up Any Other Programs Required
 	def load(self):

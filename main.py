@@ -46,6 +46,10 @@ def main():
   scroll_y_max = 0
 
   while True:
+
+    if (toulouse.locked and toulouse.page != ui.state.Page.SPLASH_SCREEN):
+      toulouse.load_screen(ui.state.Page.PASSCODE_LOCK_SCREEN)
+
     mouseClicked = False
 
     for event in pygame.event.get():
@@ -132,7 +136,6 @@ def main():
       if (toulouse.login(passcode_attempt) == False):
         passcode_title = "Wrong Passcode"
         del passcode_attempt[:]
-
     elif (toulouse.page == ui.state.Page.MAIN_MENU_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Main Menu Screen")
@@ -308,13 +311,14 @@ def main():
       if (not loaded_new_state):
         print("----> Displaying Home Screen")
         loaded_new_state = 1
+
       DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
 
       # Draw Buttons Once
       ui.utilities.Header(DISPLAYSURF, "", ui.colours.WHITE)
 
       for i in range(len(ui.home.GLANCES)):
-        ui.home.glance(DISPLAYSURF, ui.home.GLANCES[i], settings.UI_MARGIN_TOP+(ui.home.GLANCE_YSIZE+ui.home.GLANCE_YGAP)*i)
+        ui.home.glance(DISPLAYSURF, toulouse, ui.home.GLANCES[i], settings.UI_MARGIN_TOP+(ui.home.GLANCE_YSIZE+ui.home.GLANCE_YGAP)*i)
 
     # Redraw the screen and wait a clock tick.
     pygame.display.update()

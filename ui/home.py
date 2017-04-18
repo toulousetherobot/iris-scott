@@ -19,25 +19,28 @@ GLANCE_YSIZE = 48
 GLANCE_YGAP = 4
 
 GLANCES = [{
-		"value": "100/1901",
+		"value": None,
 		"identifier": "FRM",
 		"color": colours.WHITE,
 	},{
-		"value": "11.246",
+		"value": None,
 		"identifier": "X",
 		"color": colours.PHOSPHORIC_COLORS,
 	},{
-		"value": "9.901",
+		"value": None,
 		"identifier": "Y",
 		"color": colours.PINK_COLORS,
 	},{
-		"value": "-0.001",
+		"value": None,
 		"identifier": "Z",
 		"color": colours.CYAN_COLORS,
 	}]
 
-def glance(surface, glance, y, x=settings.UI_MARGIN, width=GLANCE_XSIZE, height=GLANCE_YSIZE,
+def glance(surface, robot, glance, y, x=settings.UI_MARGIN, width=GLANCE_XSIZE, height=GLANCE_YSIZE,
 	value_font=GLANCE_VALUE_FONT, identifier_font=GLANCE_ID_FONT):
+
+	if (glance["identifier"] == "FRM" and robot.program is None):
+		return
 
 	rect         = Rect((x,y,width,height))
 	original_color = deepcopy(glance["color"])
@@ -52,7 +55,7 @@ def glance(surface, glance, y, x=settings.UI_MARGIN, width=GLANCE_XSIZE, height=
 	gradient = pygame.Surface(rect.size, SRCALPHA)
 
 	# Value
-	text_surf = value_font.render(glance["value"], True, color)
+	text_surf = value_font.render("{:05.3f}".format(getattr(robot, glance["identifier"], 0.000)), True, color)
 	value_text_rect = text_surf.get_rect()
 	value_text_rect.topleft = (x, -15)
 	mask.blit(text_surf, value_text_rect)
