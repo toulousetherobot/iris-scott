@@ -23,6 +23,8 @@ def Header(surface, title, color, bg_color = colours.SCREEN_BG_COLOR):
     title_text_rect.midright = (settings.WINDOWWIDTH -settings.UI_MARGIN_RIGHT, settings.UI_MARGIN_TOP/2)
     surface.blit(title_text_surf, title_text_rect)
 
+    # Notifcation Dot
+    FilledCircle(surface, (settings.WINDOWWIDTH/2, settings.UI_MARGIN_TOP/2, settings.NOTIFICATION_RADIUS), colours.ERROR_RED)
 
 def FilledCircle(surface, circ, color):
 
