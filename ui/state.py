@@ -40,6 +40,10 @@ class State(object):
 		self.d3 = None
 		self.program = None
 
+	def __str__(self):
+		return "{time}: Mode <{mode}>, Page <{mode}>, Program <{mode}>, T1 <{theta1}>, T2 <{theta2}>, D3 <{d3}>".format(
+			time=self.timestamp, mode=self.mode, program=self.program, theta1=self.theta1, theta2=self.theta2, d3=self.d3)
+
 class Toulouse(object):
 	def __init__(self):
 
@@ -62,6 +66,16 @@ class Toulouse(object):
 		if (len(self.previous_OS_states) == 0):
 			# No New States
 			state = State(mode=self.mode, page=self.page, theta1=None, theta2=None, d3=None, program=None)
+		else:
+			state = deepcopy(self.previous_OS_states[-1])
+
+			# Update Selectively
+			state.mode = mode if mode is not None else state.mode
+			state.page = page if page is not None else state.page
+			state.theta1 = theta1 if theta1 is not None else state.theta1
+			state.theta2 = theta2 if theta2 is not None else state.theta2
+			state.d3 = d3 if d3 is not None else state.d3
+			state.program = program if program is not None else state.program
 
 		# Change State of Toulouse if Defined
 		if (mode is not None):
@@ -77,6 +91,7 @@ class Toulouse(object):
 		if (program is not None):
 			self.program = program
 
+		print(state)
 		self.previous_OS_states.append(state)
 
 	def load_screen(self, page):
