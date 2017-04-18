@@ -59,6 +59,10 @@ class Toulouse(object):
 
 		self.previous_OS_states = []
 
+		# Set Up Authorisation
+		self.passcode = [1, 9, 0, 1]
+		self.passcode_failed_attempts_counter = 0
+
 		# Set Up Splash Screen
 		self.load_screen(Page.SPLASH_SCREEN)
 
@@ -105,6 +109,17 @@ class Toulouse(object):
 		if (self.page == page):
 			self.loaded_new_state = True
 		return self.loaded_new_state
+
+	def login(self, passcode_attempt):
+		if (len(passcode_attempt) >= len(self.passcode)):
+			# Passcode Entered Successfully
+			if (passcode_attempt == self.passcode):
+				self.passcode_failed_attempts_counter = 0
+				return self.load_screen(Page.HOME_SCREEN)
+			else:
+				self.passcode_failed_attempts_counter += 1
+				return False
+		return -1
 
 	# Space to Load Up Any Other Programs Required
 	def load(self):

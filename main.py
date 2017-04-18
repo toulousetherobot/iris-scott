@@ -38,10 +38,7 @@ def main():
   splash_start = datetime.now()
 
   # Passcode Peristent Variables
-  passcode = [1, 9, 0, 1]
   passcode_attempt = []
-  passcode_failed_attempts = 0
-  passcode_lockout_end = None
 
   # Scroll Parameters
   scroll_y_min = 0
@@ -131,18 +128,11 @@ def main():
             print("Passcode Attempt: ", passcode_attempt)
             print("Clicked", button["value"])
 
-      if (len(passcode_attempt) >= len(passcode)):
-        # Passcode Entered Successfully
-        if (passcode_attempt == passcode):
-          passcode_failed_attempts = 0
-          os_state = ui.state.Page.HOME_SCREEN
-          prev_state = ui.state.Page.PASSCODE_LOCK_SCREEN
-          loaded_new_state = 0
-        else:
-          passcode_failed_attempts += 1
-          print("Failed Attempts: ", passcode_failed_attempts)
-          passcode_title = "Wrong Passcode"
+      # Attempt to Login
+      if (toulouse.login(passcode_attempt) == False):
+        passcode_title = "Wrong Passcode"
         del passcode_attempt[:]
+
     elif (toulouse.page == ui.state.Page.MAIN_MENU_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Main Menu Screen")
