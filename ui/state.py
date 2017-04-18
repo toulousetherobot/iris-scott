@@ -4,6 +4,7 @@ Created on April 17, 2017
 """
 from enum import Enum
 from datetime import datetime
+from copy import deepcopy
 
 class Mode(Enum):
 	STOP_CATEGORY_ZERO = 0
@@ -16,6 +17,7 @@ class Mode(Enum):
 	MAINTENANCE_MODE = 13
 
 class Page(Enum):
+	NO_SCREEN_CHOSEN = 0
 	SPLASH_SCREEN = 1
 	PASSCODE_LOCK_SCREEN = 2
 	HOME_SCREEN = 3
@@ -28,15 +30,66 @@ class Page(Enum):
 	MESSAGES_LIST_SCREEN = 10
 	MESSAGE_SCREEN = 11
 
+class State(object):
+	def __init__(self, mode, page, theta1, theta2, d3, program):
+		self.timestamp = datetime.now()
+		self.mode = mode
+		self.page = page
+		self.theta1 = None
+		self.theta2 = None
+		self.d3 = None
+		self.program = None
+
 class Toulouse(object):
 	def __init__(self):
 
-		self.status = Mode.NO_MODE_CHOSEN
+		self.mode = Mode.NO_MODE_CHOSEN
+		self.page = Page.NO_SCREEN_CHOSEN
+		self.loaded_new_state = False
+		self.program = None
+
+		# Joint Angles
+		self.theta1 = None
+		self.theta2 = None
+		self.d3     = None
 
 		self.previous_OS_states = []
 
 		# Set Up Splash Screen
-		self.page = Page.SPLASH_SCREEN
+		self.load_screen(Page.SPLASH_SCREEN)
+
+	def new_state(self, mode=None, page=None, theta1=None, theta2=None, d3=None, program=None):
+		if (len(self.previous_OS_states) == 0):
+			# No New States
+			state = State(mode=self.mode, page=self.page, theta1=None, theta2=None, d3=None, program=None)
+
+		# Change State of Toulouse if Defined
+		if (mode is not None):
+			self.mode = mode
+		if (page is not None):
+			self.page = page
+		if (theta1 is not None):
+			self.theta1 = theta1
+		if (theta2 is not None):
+			self.theta2 = theta2
+		if (d3 is not None):
+			self.d3 = d3
+		if (program is not None):
+			self.program = program
+
+		self.previous_OS_states.append(state)
+
+	def load_screen(self, page):
+		if (self.page != page):
+			self.new_state(self, page)
+			self.loaded_new_state = False
+			return True
+		return False
+
+	def loaded_screen(self, page):
+		if (self.page == page):
+			self.loaded_new_state = True
+		return self.loaded_new_state
 
 	# Space to Load Up Any Other Programs Required
 	def load(self):
