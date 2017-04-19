@@ -141,6 +141,18 @@ class Toulouse(object):
 				return False
 		return -1
 
+	def lock(self):
+		if (not self.locked):
+			self.locked = True
+
+	def restart(self):
+		print("      ATTENTION, TOULOUSE POWER TO BE CYCLED IMMEDIATELY. PLEASE STAND CLEAR.")
+		exit(0)
+
+	def shutdown(self):
+		print("      ATTENTION, TOULOUSE TO BE POWERED DOWN IMMEDIATELY. PLEASE STAND CLEAR.")
+		exit(0)
+
 	def load_program(self, program):
 		if (self.program != program):
 			# Check Program still exists

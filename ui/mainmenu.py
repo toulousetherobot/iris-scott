@@ -54,7 +54,7 @@ def rounded_button(surface, button, x, y,
 	button_rect = FilledRoundedRectangle(surface, (x, y, width, height), backround_color, 1)
 	
 	# Circle
-	circle = FilledCircle(surface, (ceil(BUTTON_YSIZE/2 + x), ceil(BUTTON_YSIZE/2 + y), ceil((BUTTON_YSIZE-BUTTON_YGAP))), ui.colours.WHITE)
+	circle = FilledCircle(surface, (ceil(BUTTON_YSIZE/2 + x), ceil(BUTTON_YSIZE/2 + y), ceil((BUTTON_YSIZE-BUTTON_YGAP))), colours.WHITE)
 
 	# Image
 	img_splash = pygame.image.load(button["icon"]).convert_alpha()

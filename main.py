@@ -138,9 +138,8 @@ def main():
         passcode_title = "Wrong Passcode"
         del passcode_attempt[:]
     elif (toulouse.page == ui.state.Page.MAIN_MENU_SCREEN):
-      if (not loaded_new_state):
+      if (not toulouse.loaded_new_state):
         print("----> Displaying Main Menu Screen")
-        loaded_new_state = 1
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
 
         # Draw Buttons Once
@@ -156,17 +155,18 @@ def main():
           menu_buttons.append(ui.mainmenu.rounded_button(DISPLAYSURF, ui.mainmenu.BUTTONS[i], 
             settings.UI_MARGIN, settings.WINDOWHEIGHT-settings.UI_MARGIN_BOTTOM-(ui.mainmenu.BUTTON_YSIZE+ui.mainmenu.BUTTON_YGAP)*(i+1)))
 
+        toulouse.loaded_screen(ui.state.Page.MAIN_MENU_SCREEN)
+
       # Button Logic
       if (mouseClicked):
         for button in menu_buttons:
           if button["target"].collidepoint((mousex, mousey)):
             if (button["value"] == ui.mainmenu.BUTTON_SHUTDOWN):
-              print("      Shutting Down. Immediatley")
+              toulouse.shutdown()
             if (button["value"] == ui.mainmenu.BUTTON_RESTART):
-              print("      Restarting. Immediatley")
+              toulouse.restart()
             if (button["value"] == ui.mainmenu.BUTTON_LOCK):
-              os_state = ui.state.Page.PASSCODE_LOCK_SCREEN
-              loaded_new_state = 0
+              toulouse.lock()
             if (button["value"] == ui.mainmenu.BUTTON_CANCEL):
               os_state = prev_state
               loaded_new_state = 0
