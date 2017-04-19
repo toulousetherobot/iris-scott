@@ -36,14 +36,14 @@ class State(object):
 		self.timestamp = datetime.now()
 		self.mode = mode
 		self.page = page
-		self.theta1 = None
-		self.theta2 = None
-		self.d3 = None
-		self.program = None
+		self.theta1 = theta1
+		self.theta2 = theta2
+		self.d3 = d3
+		self.program = program
 
 	def __str__(self):
-		return "{time}: Mode <{mode}>, Page <{mode}>, Program <{mode}>, T1 <{theta1}>, T2 <{theta2}>, D3 <{d3}>".format(
-			time=self.timestamp, mode=self.mode, program=self.program, theta1=self.theta1, theta2=self.theta2, d3=self.d3)
+		return "{time}: Mode <{mode}>, Page <{page}>, Program <{program}>, T1 <{theta1}>, T2 <{theta2}>, D3 <{d3}>".format(
+			time=self.timestamp, mode=self.mode, page=self.page, program=self.program, theta1=self.theta1, theta2=self.theta2, d3=self.d3)
 
 class Toulouse(object):
 	SHOULDER_PAN_LINK_LENGTH = 8.75
