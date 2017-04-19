@@ -19,27 +19,27 @@ GLANCE_YSIZE = 48
 GLANCE_YGAP = 4
 
 GLANCES = [{
-		"value": None,
-		"identifier": "FRM",
+		"identifier": "frame",
+		"label": "FRM",
 		"color": colours.WHITE,
 	},{
-		"value": None,
 		"identifier": "X",
+		"label": "X",
 		"color": colours.PHOSPHORIC_COLORS,
 	},{
-		"value": None,
 		"identifier": "Y",
+		"label": "Y",
 		"color": colours.PINK_COLORS,
 	},{
-		"value": None,
 		"identifier": "Z",
+		"label": "Z",
 		"color": colours.CYAN_COLORS,
 	}]
 
 def glance(surface, robot, glance, y, x=settings.UI_MARGIN, width=GLANCE_XSIZE, height=GLANCE_YSIZE,
 	value_font=GLANCE_VALUE_FONT, identifier_font=GLANCE_ID_FONT):
 
-	if (glance["identifier"] == "FRM" and robot.program is None):
+	if (glance["identifier"] == "frame" and robot.program is None):
 		return
 
 	rect         = Rect((x,y,width,height))
@@ -55,13 +55,17 @@ def glance(surface, robot, glance, y, x=settings.UI_MARGIN, width=GLANCE_XSIZE, 
 	gradient = pygame.Surface(rect.size, SRCALPHA)
 
 	# Value
-	text_surf = value_font.render("{:05.3f}".format(getattr(robot, glance["identifier"], 0.000)), True, color)
+	if (glance["identifier"] == "frame"):
+		text = "{:d}/{:d}".format(getattr(robot, glance["identifier"], 0), getattr(robot, "total_frames", 0))
+	else:
+		text = "{:05.3f}".format(getattr(robot, glance["identifier"], 0.000))
+	text_surf = value_font.render(text, True, color)
 	value_text_rect = text_surf.get_rect()
 	value_text_rect.topleft = (x, -15)
 	mask.blit(text_surf, value_text_rect)
 
 	# Name
-	text_surf = identifier_font.render(glance["identifier"], True, color)
+	text_surf = identifier_font.render(glance["label"], True, color)
 	id_text_rect = text_surf.get_rect()
 	id_text_rect.bottomleft = (value_text_rect.right, value_text_rect.bottom-10)
 	mask.blit(text_surf, id_text_rect)

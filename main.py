@@ -4,7 +4,6 @@ Created on April 9, 2017
 '''
 import pygame
 import sys
-import os
 from pygame.locals import *
 from datetime import datetime, timedelta
 
@@ -77,6 +76,7 @@ def main():
         splash_start = datetime.now() + timedelta(seconds=SPLASH_TIMEOUT)
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
         DISPLAYSURF.blit(img_splash, (20, 59))
+        toulouse.load()
         toulouse.loaded_screen(ui.state.Page.SPLASH_SCREEN)
 
       # Timer to Passcode Lock
@@ -227,18 +227,8 @@ def main():
     elif (toulouse.page == ui.state.Page.CURVES_SELECTION_SCREEN):
       if (not toulouse.loaded_new_state):
         print("----> Displaying Curves Selection Screen")
-        # Check Curves Directory Exists & If Not Create One
-        current_directory = os.getcwd()
-        curves_path = os.path.join(current_directory, ui.curvesselection.CURVES_FOLDER)
-        if not os.path.exists(curves_path):
-          os.makedirs(curves_path, exist_ok=True)
-
         # Create Sorted List of Files
-        files = []
-        for (dirpath, dirnames, filenames) in os.walk(curves_path):
-          files.extend(filenames)
-          break
-        sorted(files)
+        files = toulouse.curve_files()
 
         # Set Maximum Scroll Y Max
         scroll_y = 0 # reset scroll
@@ -261,9 +251,8 @@ def main():
           if button["target"].collidepoint((mousex, mousey)):
             if (button["value"] == ui.curvesselection.BUTTON_FILE):
               print("      Starting Processing on Curves File:", button["action"])
-              os_state = ui.state.Page.HOME_SCREEN
-              loaded_new_state = 0
-              prev_state = ui.state.Page.CURVES_SELECTION_SCREEN
+              toulouse.load_program(button["action"])
+              toulouse.load_screen(ui.state.Page.HOME_SCREEN)
     elif (toulouse.page == ui.state.Page.MESSAGES_LIST_SCREEN):
       if (not toulouse.loaded_new_state):
         print("----> Displaying Message List Screen")

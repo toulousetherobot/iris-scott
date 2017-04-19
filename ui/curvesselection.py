@@ -11,8 +11,6 @@ from . import colours
 
 from ui.utilities import FilledRoundedRectangle
 
-CURVES_FOLDER = "curves"
-
 BUTTON_TITLE_FONT = fonts.SF_UI_TEXT_LIGHT_FOOTNOTE
 BUTTON_TEXT_COLOUR = colours.PHOSPHORIC_TEXT_COLOR
 BUTTON_BG_COLOUR = colours.PHOSPHORIC_COLORS
