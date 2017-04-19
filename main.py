@@ -272,7 +272,7 @@ def main():
               loaded_new_state = 0
               prev_state = ui.state.Page.CURVES_SELECTION_SCREEN
     elif (toulouse.page == ui.state.Page.MESSAGES_LIST_SCREEN):
-      if (not loaded_new_state):
+      if (not toulouse.loaded_new_state):
         print("----> Displaying Message List Screen")
         loaded_new_state = 1
         scroll_y = 0 # reset scroll
@@ -283,12 +283,14 @@ def main():
         # Set Maximum Scroll Y Max
         scroll_y_max = -(ui.messages.BUTTON_YSIZE+ui.messages.BUTTON_YGAP)*len(ui.messages.BUTTONS)
         scroll_y_max += settings.WINDOWHEIGHT-settings.UI_MARGIN_TOP
+        toulouse.loaded_screen(ui.state.Page.MESSAGES_LIST_SCREEN)
 
       DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
 
-      for i in range(len(ui.messages.BUTTONS)):
-        messages_buttons.append(ui.messages.rounded_button(DISPLAYSURF, ui.messages.BUTTONS[i], 
-          settings.UI_MARGIN, settings.UI_MARGIN_TOP + scroll_y + (ui.messages.BUTTON_YSIZE+ui.messages.BUTTON_YGAP)*(i)))
+      if (len(ui.messages.BUTTONS) > 0):
+        for i in range(len(ui.messages.BUTTONS)):
+          messages_buttons.append(ui.messages.rounded_button(DISPLAYSURF, ui.messages.BUTTONS[i], 
+            settings.UI_MARGIN, settings.UI_MARGIN_TOP + scroll_y + (ui.messages.BUTTON_YSIZE+ui.messages.BUTTON_YGAP)*(i)))
 
       ui.utilities.Header(DISPLAYSURF, "Messages", ui.colours.WHITE)
     elif (toulouse.page == ui.state.Page.MESSAGE_SCREEN):
