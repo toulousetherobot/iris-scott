@@ -66,7 +66,8 @@ def main():
         pygame.event.clear(pygame.MOUSEMOTION)
       elif event.type == MOUSEBUTTONUP:
         mousex, mousey = event.pos
-        mouseClicked = True
+        if (event.button != 4 and event.button != 5):
+          mouseClicked = True
         pygame.event.clear(pygame.MOUSEBUTTONUP)
 
     # Window Tree
@@ -195,7 +196,7 @@ def main():
         for i in range(len(ui.jog.AXIS_JOINT)):
           axis_buttons.append(ui.jog.axis_controller(DISPLAYSURF, ui.jog.AXIS_JOINT[i], settings.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
     elif (toulouse.page == ui.state.Page.PROGRAM_SELECTION_SCREEN):
-      if (not loaded_new_state):
+      if (not toulouse.loaded_new_state):
         print("----> Displaying Program Selection Screen")
         loaded_new_state = 1
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
@@ -208,34 +209,24 @@ def main():
         for i in range(len(ui.program.BUTTONS)):
           program_buttons.append(ui.program.rounded_button(DISPLAYSURF, ui.program.BUTTONS[i], 
             settings.UI_MARGIN, settings.UI_MARGIN_TOP + (ui.program.BUTTON_YSIZE+ui.program.BUTTON_YGAP)*i))
+        toulouse.loaded_screen(ui.state.Page.PROGRAM_SELECTION_SCREEN)
 
       # Button Logic
       if (mouseClicked):
         for button in program_buttons:
           if button["target"].collidepoint((mousex, mousey)):
             if (button["value"] == ui.program.BUTTON_CARICATURE):
-              print("      Swapping to Photo Capture Screen")
-              os_state = ui.state.Page.PHOTO_CAPTURE_SCREEN
-              loaded_new_state = 0
-              prev_state = ui.state.Page.PROGRAM_SELECTION_SCREEN
-
-            if (button["value"] == ui.program.BUTTON_CARICATURE):
-              print("      Swapping to List Programs")
-              os_state = ui.state.Page.CURVES_SELECTION_SCREEN
-              loaded_new_state = 0
-              prev_state = ui.state.Page.PROGRAM_SELECTION_SCREEN
+              toulouse.load_screen(ui.state.Page.PHOTO_CAPTURE_SCREEN)
+            if (button["value"] == ui.program.BUTTON_CURVES):
+              toulouse.load_screen(ui.state.Page.CURVES_SELECTION_SCREEN)
     elif (toulouse.page == ui.state.Page.PHOTO_CAPTURE_SCREEN):
       if (not loaded_new_state):
         print("----> Displaying Photo Capture Screen")
         loaded_new_state = 1
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
     elif (toulouse.page == ui.state.Page.CURVES_SELECTION_SCREEN):
-      DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
-      if (not loaded_new_state):
+      if (not toulouse.loaded_new_state):
         print("----> Displaying Curves Selection Screen")
-        loaded_new_state = 1
-        scroll_y = 0 # reset scroll
-
         # Check Curves Directory Exists & If Not Create One
         current_directory = os.getcwd()
         curves_path = os.path.join(current_directory, ui.curvesselection.CURVES_FOLDER)
@@ -250,12 +241,14 @@ def main():
         sorted(files)
 
         # Set Maximum Scroll Y Max
+        scroll_y = 0 # reset scroll
         scroll_y_max = -(ui.curvesselection.BUTTON_YSIZE+ui.curvesselection.BUTTON_YGAP)*len(files)
         scroll_y_max += settings.WINDOWHEIGHT-settings.UI_MARGIN_TOP
+        toulouse.loaded_screen(ui.state.Page.CURVES_SELECTION_SCREEN)
 
-      # Draw Buttons Once
+      DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
+
       files_buttons = []
-
       for i in range(len(files)):
         files_buttons.append(ui.curvesselection.rounded_button(DISPLAYSURF, files[i], 
           settings.UI_MARGIN, settings.UI_MARGIN_TOP + scroll_y +(ui.curvesselection.BUTTON_YSIZE+ui.curvesselection.BUTTON_YGAP)*i))
