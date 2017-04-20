@@ -26,6 +26,7 @@ AXIS_THETA1 = 4
 AXIS_THETA2 = 5
 AXIS_D3     = 6
 
+BUTTON_EDIT = 0
 BUTTON_ADD = 1
 BUTTON_ADD_ICN = "plus_icn_15.png"
 BUTTON_SUBTRACT = 2
@@ -33,6 +34,7 @@ BUTTON_SUBTRACT_ICN = "minus_icn_15.png"
 
 AXIS_CARTESIAN = [{
 		"id": AXIS_X,
+		"identifier": "X",
 		"name": "X Coordinate",
 		"max": 0.000,
 		"min": 17.000,
@@ -40,6 +42,7 @@ AXIS_CARTESIAN = [{
 		"color": colours.PHOSPHORIC_COLORS,
 	},{
 		"id": AXIS_Y,
+		"identifier": "Y",
 		"name": "Y Coordinate",
 		"max": 0.000,
 		"min": 17.000,
@@ -47,6 +50,7 @@ AXIS_CARTESIAN = [{
 		"color": colours.PINK_COLORS,
 	},{
 		"id": AXIS_Z,
+		"identifier": "Z",
 		"name": "Z Coordinate",
 		"max": 0.000,
 		"min": 17.000,
@@ -77,7 +81,7 @@ AXIS_JOINT = [{
 		"color": colours.CYAN_COLORS,
 	}]
 
-def axis_controller(surface, controller, y, x=settings.UI_MARGIN, width=CONTROLLER_XSIZE, height=CONTROLLER_YSIZE,
+def axis_controller(surface, robot, controller, y, x=settings.UI_MARGIN, width=CONTROLLER_XSIZE, height=CONTROLLER_YSIZE,
 	value_font=CONTROLLER_VALUE_FONT, tag_font=CONTROLLER_TAG_FONT, radius=CONTROLLER_CIRC_RADIUS):
 
 	rect         = Rect((x,y,width,height))
@@ -90,29 +94,40 @@ def axis_controller(surface, controller, y, x=settings.UI_MARGIN, width=CONTROLL
 
 	FillGradient(gradient, controller["color"][0], controller["color"][1])
 
+	buttons = []
+
 	# Decrement Button
-	FilledCircle(mask, (radius/2, height/2, radius), color)
+	button_rect = FilledCircle(mask, (radius/2, height/2, radius), color)
 	img_splash = pygame.image.load(BUTTON_SUBTRACT_ICN).convert_alpha()
 	img_splash_rect = img_splash.get_rect()
 	mask.blit(img_splash, (radius/2-img_splash_rect.width/2, height/2-img_splash_rect.height/2))
+	button_rect.topleft = (button_rect.x + pos[0], button_rect.y + pos[1]) # Modify Rect for Final Placement
+	buttons.append({"target": button_rect, "value": BUTTON_SUBTRACT, "action": controller["identifier"], "change": controller["change"]})
 
 	# Increment Button
-	FilledCircle(mask, (width-radius/2, height/2, radius), color)
+	button_rect = FilledCircle(mask, (width-radius/2, height/2, radius), color)
 	img_splash = pygame.image.load(BUTTON_ADD_ICN).convert_alpha()
 	img_splash_rect = img_splash.get_rect()
 	mask.blit(img_splash, (width-radius/2-img_splash_rect.width/2, height/2-img_splash_rect.height/2))
+	button_rect.topleft = (button_rect.x + pos[0], button_rect.y + pos[1]) # Modify Rect for Final Placement
+	buttons.append({"target": button_rect, "value": BUTTON_ADD, "action": controller["identifier"], "change": controller["change"]})
 
 	# Value
-	button_text_surf = value_font.render("11.246", True, color)
-	button_text_rect = button_text_surf.get_rect()
-	button_text_rect.midtop = (width/2, -15)
-	mask.blit(button_text_surf, button_text_rect)
+	text = "{:05.3f}".format(getattr(robot, controller["identifier"], 0.000))
+	text_surf = value_font.render(text, True, color)
+	text_rect = text_surf.get_rect()
+	text_rect.midtop = (width/2, -15)
+	mask.blit(text_surf, text_rect)
+	text_rect.topleft = (text_rect.x + pos[0], text_rect.y + pos[1]) # Modify Rect for Final Placement
+	buttons.append({"target": text_rect, "value": BUTTON_EDIT, "action": controller["identifier"]})
 
 	# Name
-	button_text_surf = tag_font.render(controller["name"], True, color)
-	button_text_rect = button_text_surf.get_rect()
-	button_text_rect.midbottom = (width/2, height)
-	mask.blit(button_text_surf, button_text_rect)
+	text_surf = tag_font.render(controller["name"], True, color)
+	text_rect = text_surf.get_rect()
+	text_rect.midbottom = (width/2, height)
+	mask.blit(text_surf, text_rect)
 
 	gradient.blit(mask, (0, 0), None, BLEND_RGBA_MULT)
 	surface.blit(gradient, pos)
+
+	return buttons

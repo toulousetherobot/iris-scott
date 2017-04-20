@@ -8,7 +8,7 @@ import subprocess
 from enum import Enum
 from datetime import datetime
 from copy import deepcopy
-from math import cos, sin
+from math import cos, sin, sqrt, atan2
 
 class Mode(Enum):
 	STOP_CATEGORY_ZERO = 0
@@ -50,6 +50,7 @@ class State(object):
 			time=self.timestamp, mode=self.mode, page=self.page, program=self.program, theta1=self.theta1, theta2=self.theta2, d3=self.d3)
 
 class Toulouse(object):
+	HANDEDNESS = 1
 	SHOULDER_PAN_LINK_LENGTH = 8.75
 	ELBOW_PAN_LINK_LENGTH = 8.75
 
@@ -196,20 +197,38 @@ class Toulouse(object):
 
 		return files
 
+	def inverse_kinematics(self, x, y):
+		r = (x**2+y**2-Toulouse.SHOULDER_PAN_LINK_LENGTH**2-Toulouse.ELBOW_PAN_LINK_LENGTH**2)/(2*Toulouse.SHOULDER_PAN_LINK_LENGTH*Toulouse.ELBOW_PAN_LINK_LENGTH)
+		theta2 = atan2(Toulouse.HANDEDNESS*sqrt(1-r**2), r)
+		theta1 = atan2(y, x)-atan2(Toulouse.ELBOW_PAN_LINK_LENGTH*sin(theta2), Toulouse.SHOULDER_PAN_LINK_LENGTH+Toulouse.ELBOW_PAN_LINK_LENGTH*cos(theta2))
+		self.new_state(theta1=theta1, theta2=theta2)
+
 	# X
 	@property
 	def X(self):
-		return Toulouse.SHOULDER_PAN_LINK_LENGTH*cos(self.theta1)+Toulouse.ELBOW_PAN_LINK_LENGTH*cos(self.theta1-self.theta2)
+		return Toulouse.SHOULDER_PAN_LINK_LENGTH*cos(self.theta1)+Toulouse.ELBOW_PAN_LINK_LENGTH*cos(self.theta1+self.theta2)
+
+	@X.setter
+	def X(self, value):
+		self.inverse_kinematics(value, self.Y)
 
 	# Y
 	@property
 	def Y(self):
-		return Toulouse.SHOULDER_PAN_LINK_LENGTH*sin(self.theta1)+Toulouse.ELBOW_PAN_LINK_LENGTH*sin(self.theta1-self.theta2)
+		return Toulouse.SHOULDER_PAN_LINK_LENGTH*sin(self.theta1)+Toulouse.ELBOW_PAN_LINK_LENGTH*sin(self.theta1+self.theta2)
+
+	@Y.setter
+	def Y(self, value):
+		self.inverse_kinematics(self.X, value)
 
 	# Z
 	@property
 	def Z(self):
 		return self.d3
+
+	@Z.setter
+	def Z(self, value):
+		self.new_state(d3=value)
 
 	# Space to Load Up Any Other Programs Required
 	def load(self):
