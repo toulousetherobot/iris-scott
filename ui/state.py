@@ -83,6 +83,7 @@ class Toulouse(object):
 		self.passcode_failed_attempts_counter = 0
 
 		# Set Up Messages
+		self.message_unread_count = 0
 		self.messages = []
 
 		# Set Up Splash Screen
@@ -262,14 +263,35 @@ class Toulouse(object):
 	def Z(self, value):
 		self.new_state(d3=value)
 
+	def new_message(self, type, title, footnote):
+		if (type not in ["error", "warning", "success", "info"]):
+			return False
+
+		message = {
+			"type": type,
+			"title": title,
+			"footnote": footnote,
+			"timestamp": datetime.now(),
+			"read": False
+		}
+
+		self.messages.append(message)
+		self.message_unread_count += 1
+
+	def mark_read(self, index):
+		if (0 <= index < len(self.messages)):
+			self.messages[index]["read"] = True
+			self.message_unread_count -= 1
+			return True
+		return False
+
 	def check_messages(self):
 		method_frame, properties, body = self.channel.basic_get('messages')
 		if method_frame is None:
 			return
 
 		message = json.loads(body)
-		message["read"] = False
-		self.messages.append(message)
+		self.new_message(type=message.get("type"), title=message.get("title"), footnote=message.get("footnote"))
 
 		# Acknowledge the message
 		self.channel.basic_ack(method_frame.delivery_tag)

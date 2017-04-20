@@ -105,8 +105,9 @@ def rounded_button(surface, button, x, y,
 
 	return {"target": button_rect, "value": BUTTON_LIST, "action": button["id"]}
 
-def message_display(surface, button, title_font=MESSAGE_TITLE_FONT, footnote_font= MESSAGE_FOOTNOTE_FONT, text_color=MESSAGE_TEXT_COLOUR, footnote_text_rect=MESSAGE_FOOTNOTE_RECT):
-	Header(surface, "Messages", colours.WHITE)
+def message_display(surface, robot, button, title_font=MESSAGE_TITLE_FONT, footnote_font= MESSAGE_FOOTNOTE_FONT, text_color=MESSAGE_TEXT_COLOUR, footnote_text_rect=MESSAGE_FOOTNOTE_RECT):
+	
+	Header(surface, robot, "Messages", colours.WHITE)
 
 	if button["type"] == "info":
 		notification_color = colours.INFO_BLUE

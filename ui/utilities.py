@@ -5,10 +5,11 @@ from datetime import datetime
 from . import settings
 from . import fonts
 from . import colours
+from . import state
 
 BUTTON_HEADER = 100
 
-def Header(surface, title, color, bg_color = colours.SCREEN_BG_COLOR):
+def Header(surface, robot, title, color=colours.WHITE, bg_color=colours.SCREEN_BG_COLOR):
 
     rect = Rect(0,0, settings.WINDOWWIDTH, settings.UI_MARGIN_TOP)
     draw.rect(surface, bg_color, rect)
@@ -26,7 +27,8 @@ def Header(surface, title, color, bg_color = colours.SCREEN_BG_COLOR):
     surface.blit(time_text_surf, time_text_rect)
 
     # Notifcation Dot
-    FilledCircle(surface, (settings.WINDOWWIDTH/2, settings.UI_MARGIN_TOP/2, settings.NOTIFICATION_RADIUS), colours.ERROR_RED)
+    if (robot.message_unread_count > 0 and robot.page != state.Page.MESSAGES_LIST_SCREEN and robot.page != state.Page.MESSAGE_SCREEN):
+        FilledCircle(surface, (settings.WINDOWWIDTH/2, settings.UI_MARGIN_TOP/2, settings.NOTIFICATION_RADIUS), colours.ERROR_RED)
 
     return {"target": title_text_rect, "value": BUTTON_HEADER}
 

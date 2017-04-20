@@ -180,7 +180,7 @@ def main():
 
       axis_buttons = []
 
-      axis_buttons.append(ui.utilities.Header(DISPLAYSURF, "Cartesian Jog", ui.colours.WHITE))
+      axis_buttons.append(ui.utilities.Header(DISPLAYSURF, toulouse, "Cartesian Jog", ui.colours.WHITE))
 
       for i in range(len(ui.jog.AXIS_CARTESIAN)):
         axis_buttons.extend(ui.jog.axis_controller(DISPLAYSURF, toulouse, ui.jog.AXIS_CARTESIAN[i], settings.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
@@ -206,7 +206,7 @@ def main():
       DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
       axis_buttons = []
 
-      axis_buttons.append(ui.utilities.Header(DISPLAYSURF, "Joint Jog", ui.colours.WHITE))
+      axis_buttons.append(ui.utilities.Header(DISPLAYSURF, toulouse, "Joint Jog", ui.colours.WHITE))
 
       for i in range(len(ui.jog.AXIS_JOINT)):
         axis_buttons.extend(ui.jog.axis_controller(DISPLAYSURF, toulouse, ui.jog.AXIS_JOINT[i], settings.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
@@ -233,7 +233,7 @@ def main():
         # Draw Buttons Once
         program_buttons = []
 
-        ui.utilities.Header(DISPLAYSURF, "Programs", ui.colours.PHOSPHORIC_LIGHT_COLOR)
+        ui.utilities.Header(DISPLAYSURF, toulouse, "Programs", ui.colours.PHOSPHORIC_LIGHT_COLOR)
 
         for i in range(len(ui.program.BUTTONS)):
           program_buttons.append(ui.program.rounded_button(DISPLAYSURF, ui.program.BUTTONS[i], 
@@ -272,7 +272,7 @@ def main():
         files_buttons.append(ui.curvesselection.rounded_button(DISPLAYSURF, files[i], 
           settings.UI_MARGIN, settings.UI_MARGIN_TOP + scroll_y +(ui.curvesselection.BUTTON_YSIZE+ui.curvesselection.BUTTON_YGAP)*i))
 
-      ui.utilities.Header(DISPLAYSURF, "Programs", ui.colours.PHOSPHORIC_LIGHT_COLOR)
+      ui.utilities.Header(DISPLAYSURF, toulouse, "Programs", ui.colours.PHOSPHORIC_LIGHT_COLOR)
 
       # Button Logic
       if (mouseClicked):
@@ -305,7 +305,7 @@ def main():
           messages_buttons.append(ui.messages.rounded_button(DISPLAYSURF, toulouse.messages[i], 
             settings.UI_MARGIN, settings.UI_MARGIN_TOP + scroll_y + (ui.messages.BUTTON_YSIZE+ui.messages.BUTTON_YGAP)*(i)))
 
-      ui.utilities.Header(DISPLAYSURF, "Messages", ui.colours.WHITE)
+      ui.utilities.Header(DISPLAYSURF, toulouse, "Messages")
       if (mouseClicked):
         for button in messages_buttons:
           if button["target"].collidepoint((mousex, mousey)):
@@ -316,7 +316,7 @@ def main():
       if (not toulouse.loaded_new_state):
         print("----> Displaying Message Screen")
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
-        messages_buttons = ui.messages.message_display(DISPLAYSURF, toulouse.messages[message_id])
+        messages_buttons = ui.messages.message_display(DISPLAYSURF, toulouse, toulouse.messages[message_id])
         toulouse.loaded_screen(ui.state.Page.MESSAGE_SCREEN)
 
       # Button Logic
@@ -324,7 +324,7 @@ def main():
         for button in messages_buttons:
           if button["target"].collidepoint((mousex, mousey)):
             if (button["value"] == ui.messages.BUTTON_ACKNOWLEDGE):
-              toulouse.messages[message_id]["read"] = True
+              toulouse.mark_read(message_id)
               toulouse.load_screen(ui.state.Page.MESSAGES_LIST_SCREEN)
             elif (button["value"] == ui.messages.BUTTON_CLEAR):
               toulouse.load_screen(ui.state.Page.MESSAGES_LIST_SCREEN)
@@ -336,7 +336,7 @@ def main():
       DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
 
       # Draw Buttons Once
-      ui.utilities.Header(DISPLAYSURF, "", ui.colours.WHITE)
+      ui.utilities.Header(DISPLAYSURF, toulouse, "")
 
       for i in range(len(ui.home.GLANCES)):
         ui.home.glance(DISPLAYSURF, toulouse, ui.home.GLANCES[i], settings.UI_MARGIN_TOP+(ui.home.GLANCE_YSIZE+ui.home.GLANCE_YGAP)*i)
