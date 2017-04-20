@@ -4,6 +4,7 @@ Created on April 9, 2017
 '''
 import pygame
 import sys
+import os
 from pygame.locals import *
 from datetime import datetime, timedelta
 
@@ -31,6 +32,9 @@ def main():
   toulouse = ui.state.Toulouse()
   loaded_new_state = 0
 
+  # Security
+  passcode_attempt = []
+
   # Message Display
   message_id = None
 
@@ -46,7 +50,8 @@ def main():
 
   while True:
 
-    toulouse.check_messages()
+    if (toulouse.mode != ui.state.Mode.UNINITIALIZED_MODE):
+      toulouse.check_messages()
 
     if (toulouse.locked and toulouse.page != ui.state.Page.SPLASH_SCREEN):
       toulouse.load_screen(ui.state.Page.PASSCODE_LOCK_SCREEN)

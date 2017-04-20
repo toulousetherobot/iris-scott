@@ -22,6 +22,9 @@ class Mode(Enum):
 	MANUAL_MODE      = 12
 	MAINTENANCE_MODE = 13
 
+	UNINITIALIZED_MODE = 20
+	INITIALIZED_MODE = 21
+
 class Page(Enum):
 	NO_SCREEN_CHOSEN = 0
 	SPLASH_SCREEN = 1
@@ -62,7 +65,7 @@ class Toulouse(object):
 
 	def __init__(self):
 
-		self.mode = Mode.NO_MODE_CHOSEN
+		self.mode = Mode.UNINITIALIZED_MODE
 		self.page = Page.NO_SCREEN_CHOSEN
 		self.loaded_new_state = False
 		self.program = None
@@ -142,6 +145,7 @@ class Toulouse(object):
 			if (passcode_attempt == self.passcode):
 				self.passcode_failed_attempts_counter = 0
 				self.locked = False
+				self.new_state(mode=Mode.NO_MODE_CHOSEN)
 				return self.load_screen(Page.HOME_SCREEN)
 			else:
 				self.passcode_failed_attempts_counter += 1
@@ -312,3 +316,5 @@ class Toulouse(object):
 		self.connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
 		self.channel = self.connection.channel()
 		self.channel.queue_declare(queue='messages')
+
+		self.new_state(mode=Mode.INITIALIZED_MODE)
