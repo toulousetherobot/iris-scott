@@ -6,6 +6,8 @@ from . import settings
 from . import fonts
 from . import colours
 
+BUTTON_HEADER = 100
+
 def Header(surface, title, color, bg_color = colours.SCREEN_BG_COLOR):
 
     rect = Rect(0,0, settings.WINDOWWIDTH, settings.UI_MARGIN_TOP)
@@ -18,13 +20,16 @@ def Header(surface, title, color, bg_color = colours.SCREEN_BG_COLOR):
 
     # Time
     now = datetime.now()
-    title_text_surf = fonts.SF_UI_DISPLAY_LIGHT.render(now.strftime(settings.TIME_STRING), True, color, bg_color)
-    title_text_rect = title_text_surf.get_rect()
-    title_text_rect.midright = (settings.WINDOWWIDTH -settings.UI_MARGIN_RIGHT, settings.UI_MARGIN_TOP/2)
-    surface.blit(title_text_surf, title_text_rect)
+    time_text_surf = fonts.SF_UI_DISPLAY_LIGHT.render(now.strftime(settings.TIME_STRING), True, color, bg_color)
+    time_text_rect = time_text_surf.get_rect()
+    time_text_rect.midright = (settings.WINDOWWIDTH -settings.UI_MARGIN_RIGHT, settings.UI_MARGIN_TOP/2)
+    surface.blit(time_text_surf, time_text_rect)
 
     # Notifcation Dot
     FilledCircle(surface, (settings.WINDOWWIDTH/2, settings.UI_MARGIN_TOP/2, settings.NOTIFICATION_RADIUS), colours.ERROR_RED)
+
+    return {"target": title_text_rect, "value": BUTTON_HEADER}
+
 
 def FilledCircle(surface, circ, color):
 
