@@ -18,7 +18,10 @@ def main():
   
   # Screen Size
   DISPLAYSURF = pygame.display.set_mode((settings.WINDOWWIDTH, settings.WINDOWHEIGHT))
-  # os.putenv('SDL_FBDEV', '/dev/fb1')
+  if (os.getenv('FRAMEBUFFER') is not None):
+    # Pi Specific Settings
+    os.putenv('SDL_FBDEV', '/dev/fb1')
+    pygame.mouse.set_visible(False)
 
   mousex = 0 # used to store x coordinate of mouse event
   mousey = 0 # used to store y coordinate of mouse event
