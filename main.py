@@ -13,24 +13,27 @@ import ui
 from ui.passcode import *
 
 def main():
+  if (os.getenv('FRAMEBUFFER') is not None):
+    # Pi Specific Settings
+    os.putenv('SDL_FBDEV', '/dev/fb1')
+
   global FPSCLOCK, DISPLAYSURF
   pygame.init()
   FPSCLOCK = pygame.time.Clock()
   
   # Screen Size
   DISPLAYSURF = pygame.display.set_mode((settings.WINDOWWIDTH, settings.WINDOWHEIGHT))
-  if (os.getenv('FRAMEBUFFER') is not None):
-    # Pi Specific Settings
-    os.putenv('SDL_FBDEV', '/dev/fb1')
-    pygame.mouse.set_visible(False)
 
   mousex = 0 # used to store x coordinate of mouse event
   mousey = 0 # used to store y coordinate of mouse event
-  pygame.display.set_caption('Toulouse')
+
+  if (os.getenv('FRAMEBUFFER') is not None):
+    pygame.mouse.set_visible(False)
+  else:
+    pygame.display.set_caption('Toulouse')
 
   # Initalise OS Logic State
   toulouse = ui.state.Toulouse()
-  loaded_new_state = 0
 
   # Security
   passcode_attempt = []
