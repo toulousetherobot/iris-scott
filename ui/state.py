@@ -166,6 +166,7 @@ class Toulouse(object):
 			if (os.path.exists(os.path.join(self.curves_path, program))):
 
 				# Pre-Process `.crv` file
+				program_name = deepcopy(program)
 				program = os.path.join(Toulouse.CURVES_FOLDER, program)
 				program_stat = os.stat(program)
 
@@ -175,18 +176,20 @@ class Toulouse(object):
 					pkt_file_stat = os.stat(pkt_file)
 
 					if (program_stat.st_mtime > pkt_file_stat.st_mtime):
-						print ("      Program is Newer than Pre-Processed Packets")
+						self.new_message("info", "Old Packets", "Requesting an updated set of packets.")
 
 						subprocess.run(["./crvpreprocessor", program, pkt_file])
+						self.new_message("success", "Pre-Processed Packets", program_name)
 				else:
-						print ("      Pre-Processed Program to Packets")
 						subprocess.run(["./crvpreprocessor", program, pkt_file])					
+						self.new_message("success", "Pre-Processed Packets", program_name)
 
 				pkt_file_stat = os.stat(pkt_file)
 				if (pkt_file_stat.st_size%12 == 0):
 					self.total_frames = int(pkt_file_stat.st_size/12)
 
 				self.new_state(program=program, frame=0)
+				self.new_message("success", "Loaded Program", program_name)
 				return True
 		return False
 
