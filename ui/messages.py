@@ -30,6 +30,7 @@ BUTTON_YGAP = 6
 BUTTON_TEXT_MARGIN = 4 * BUTTON_YGAP
 BUTTON_READ_MARGIN = 1 * BUTTON_YGAP
 
+BUTTON_LIST = 0
 BUTTON_CLEAR = 1
 BUTTON_ACKNOWLEDGE = 2
 
@@ -102,7 +103,7 @@ def rounded_button(surface, button, x, y,
 	button_text_rect.bottomleft = (x + BUTTON_TEXT_MARGIN, y + 3*height/4 + 10)
 	surface.blit(button_text_surf, button_text_rect)
 
-	return {"target": button_rect, "value": button["value"]}
+	return {"target": button_rect, "value": BUTTON_LIST, "action": button["id"]}
 
 def message_display(surface, button, title_font=MESSAGE_TITLE_FONT, footnote_font= MESSAGE_FOOTNOTE_FONT, text_color=MESSAGE_TEXT_COLOUR, footnote_text_rect=MESSAGE_FOOTNOTE_RECT):
 	Header(surface, "Messages", colours.WHITE)

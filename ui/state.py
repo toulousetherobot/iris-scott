@@ -4,6 +4,8 @@ Created on April 17, 2017
 """
 import os
 import subprocess
+import pika
+import json
 
 from enum import Enum
 from datetime import datetime
@@ -79,6 +81,9 @@ class Toulouse(object):
 		self.locked = True
 		self.passcode = [1, 9, 0, 1]
 		self.passcode_failed_attempts_counter = 0
+
+		# Set Up Messages
+		self.messages = []
 
 		# Set Up Splash Screen
 		self.load_screen(Page.SPLASH_SCREEN)
@@ -257,6 +262,18 @@ class Toulouse(object):
 	def Z(self, value):
 		self.new_state(d3=value)
 
+	def check_messages(self):
+		method_frame, properties, body = self.channel.basic_get('messages')
+		if method_frame is None:
+			return
+
+		message = json.loads(body)
+		message["read"] = False
+		self.messages.append(message)
+
+		# Acknowledge the message
+		self.channel.basic_ack(method_frame.delivery_tag)
+
 	# Space to Load Up Any Other Programs Required
 	def load(self):
 		# Check Curves Directory Exists & If Not Create One
@@ -265,3 +282,8 @@ class Toulouse(object):
 		if not os.path.exists(curves_path):
 		  os.makedirs(curves_path, exist_ok=True)
 		self.curves_path = curves_path
+
+		# Set Up Messages
+		self.connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+		self.channel = self.connection.channel()
+		self.channel.queue_declare(queue='messages')

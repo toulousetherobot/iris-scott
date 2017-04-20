@@ -29,15 +29,12 @@ def main():
   loaded_new_state = 0
 
   # Message Display
-  message = {}
+  message_id = None
 
   # Image Loading
   img_splash = pygame.image.load('splash.png').convert_alpha()
   SPLASH_TIMEOUT = 1
-  splash_start = datetime.now()
-
-  # Passcode Peristent Variables
-  passcode_attempt = []
+  splash_start = None
 
   # Scroll Parameters
   scroll_y_min = 0
@@ -45,6 +42,8 @@ def main():
   scroll_y_max = 0
 
   while True:
+
+    toulouse.check_messages()
 
     if (toulouse.locked and toulouse.page != ui.state.Page.SPLASH_SCREEN):
       toulouse.load_screen(ui.state.Page.PASSCODE_LOCK_SCREEN)
@@ -288,39 +287,47 @@ def main():
         print("----> Displaying Message List Screen")
         loaded_new_state = 1
         scroll_y = 0 # reset scroll
-
-        # Draw Buttons Once
-        messages_buttons = []
-
-        # Set Maximum Scroll Y Max
-        scroll_y_max = -(ui.messages.BUTTON_YSIZE+ui.messages.BUTTON_YGAP)*len(ui.messages.BUTTONS)
-        scroll_y_max += settings.WINDOWHEIGHT-settings.UI_MARGIN_TOP
         toulouse.loaded_screen(ui.state.Page.MESSAGES_LIST_SCREEN)
 
       DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
 
-      if (len(ui.messages.BUTTONS) > 0):
-        for i in range(len(ui.messages.BUTTONS)):
-          messages_buttons.append(ui.messages.rounded_button(DISPLAYSURF, ui.messages.BUTTONS[i], 
+      # Draw Buttons Once
+      messages_buttons = []
+
+      if (len(toulouse.messages) > 0):
+        # Set Maximum Scroll Y Max
+        scroll_y_max = -(ui.messages.BUTTON_YSIZE+ui.messages.BUTTON_YGAP)*len(toulouse.messages)
+        scroll_y_max += settings.WINDOWHEIGHT-settings.UI_MARGIN_TOP
+        scroll_y_max = scroll_y_max if scroll_y_max < 0 else 0
+
+        for i in range(len(toulouse.messages)):
+          toulouse.messages[i]["id"] = i
+          messages_buttons.append(ui.messages.rounded_button(DISPLAYSURF, toulouse.messages[i], 
             settings.UI_MARGIN, settings.UI_MARGIN_TOP + scroll_y + (ui.messages.BUTTON_YSIZE+ui.messages.BUTTON_YGAP)*(i)))
 
       ui.utilities.Header(DISPLAYSURF, "Messages", ui.colours.WHITE)
+      if (mouseClicked):
+        for button in messages_buttons:
+          if button["target"].collidepoint((mousex, mousey)):
+            if button["value"] == ui.messages.BUTTON_LIST:
+              message_id = button["action"]
+              toulouse.load_screen(ui.state.Page.MESSAGE_SCREEN)
     elif (toulouse.page == ui.state.Page.MESSAGE_SCREEN):
-      if (not loaded_new_state):
+      if (not toulouse.loaded_new_state):
         print("----> Displaying Message Screen")
-        loaded_new_state = 1
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
-
-        messages_buttons = ui.messages.message_display(DISPLAYSURF, ui.messages.BUTTONS[2])
+        messages_buttons = ui.messages.message_display(DISPLAYSURF, toulouse.messages[message_id])
+        toulouse.loaded_screen(ui.state.Page.MESSAGE_SCREEN)
 
       # Button Logic
       if (mouseClicked):
         for button in messages_buttons:
           if button["target"].collidepoint((mousex, mousey)):
             if (button["value"] == ui.messages.BUTTON_ACKNOWLEDGE):
-              print("Acknowledged Message")
+              toulouse.messages[message_id]["read"] = True
+              toulouse.load_screen(ui.state.Page.MESSAGES_LIST_SCREEN)
             elif (button["value"] == ui.messages.BUTTON_CLEAR):
-              print("Cleared Message")
+              toulouse.load_screen(ui.state.Page.MESSAGES_LIST_SCREEN)
     else: # Display Home Screen
       if (not loaded_new_state):
         print("----> Displaying Home Screen")
