@@ -300,9 +300,10 @@ def main():
         scroll_y_max += settings.WINDOWHEIGHT-settings.UI_MARGIN_TOP
         scroll_y_max = scroll_y_max if scroll_y_max < 0 else 0
 
-        for i in range(len(toulouse.messages)):
+        message_len = len(toulouse.messages)
+        for i in range(message_len):
           toulouse.messages[i]["id"] = i
-          messages_buttons.append(ui.messages.rounded_button(DISPLAYSURF, toulouse.messages[i], 
+          messages_buttons.append(ui.messages.rounded_button(DISPLAYSURF, toulouse.messages[-(i+1)], 
             settings.UI_MARGIN, settings.UI_MARGIN_TOP + scroll_y + (ui.messages.BUTTON_YSIZE+ui.messages.BUTTON_YGAP)*(i)))
 
       ui.utilities.Header(DISPLAYSURF, toulouse, "Messages")
