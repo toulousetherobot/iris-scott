@@ -179,16 +179,19 @@ def main():
 
       DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
 
-      ui.utilities.Header(DISPLAYSURF, "Cartesian Jog", ui.colours.WHITE)
-
-      # Draw Buttons Once
       axis_buttons = []
+
+      axis_buttons.append(ui.utilities.Header(DISPLAYSURF, "Cartesian Jog", ui.colours.WHITE))
+
       for i in range(len(ui.jog.AXIS_CARTESIAN)):
         axis_buttons.extend(ui.jog.axis_controller(DISPLAYSURF, toulouse, ui.jog.AXIS_CARTESIAN[i], settings.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
 
       if (mouseClicked):
         for button in axis_buttons:
           if button["target"].collidepoint((mousex, mousey)):
+            if button["value"] == ui.utilities.BUTTON_HEADER:
+              toulouse.load_screen(ui.state.Page.MANUAL_JOG_JOINT_SCREEN)
+              break
             curr_value = getattr(toulouse, button["action"], 0.00)
             if button["value"] == ui.jog.BUTTON_EDIT:
               pass
@@ -197,17 +200,31 @@ def main():
             elif button["value"] == ui.jog.BUTTON_SUBTRACT:
               setattr(toulouse, button["action"], curr_value - button["change"])
     elif (toulouse.page == ui.state.Page.MANUAL_JOG_JOINT_SCREEN):
-      if (not loaded_new_state):
+      if (not toulouse.loaded_new_state):
         print("----> Displaying Manual Jog (Joint Angles) Screen")
-        loaded_new_state = 1
-        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
-        # Draw Buttons Once
-        axis_buttons = []
+        toulouse.loaded_screen(ui.state.Page.MANUAL_JOG_JOINT_SCREEN)
 
-        ui.utilities.Header(DISPLAYSURF, "Joint Jog", ui.colours.WHITE)
+      DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
+      axis_buttons = []
 
-        for i in range(len(ui.jog.AXIS_JOINT)):
-          axis_buttons.append(ui.jog.axis_controller(DISPLAYSURF, ui.jog.AXIS_JOINT[i], settings.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
+      axis_buttons.append(ui.utilities.Header(DISPLAYSURF, "Joint Jog", ui.colours.WHITE))
+
+      for i in range(len(ui.jog.AXIS_JOINT)):
+        axis_buttons.extend(ui.jog.axis_controller(DISPLAYSURF, toulouse, ui.jog.AXIS_JOINT[i], settings.UI_MARGIN_TOP+(ui.jog.CONTROLLER_YSIZE+ui.jog.CONTROLLER_YGAP)*i))
+
+      if (mouseClicked):
+        for button in axis_buttons:
+          if button["target"].collidepoint((mousex, mousey)):
+            if button["value"] == ui.utilities.BUTTON_HEADER:
+              toulouse.load_screen(ui.state.Page.MANUAL_JOG_CARTESIAN_SCREEN)
+              break
+            curr_value = getattr(toulouse, button["action"], 0.00)
+            if button["value"] == ui.jog.BUTTON_EDIT:
+              pass
+            elif button["value"] == ui.jog.BUTTON_ADD:
+              setattr(toulouse, button["action"], curr_value + button["change"])
+            elif button["value"] == ui.jog.BUTTON_SUBTRACT:
+              setattr(toulouse, button["action"], curr_value - button["change"])
     elif (toulouse.page == ui.state.Page.PROGRAM_SELECTION_SCREEN):
       if (not toulouse.loaded_new_state):
         print("----> Displaying Program Selection Screen")

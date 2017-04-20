@@ -203,6 +203,33 @@ class Toulouse(object):
 		theta1 = atan2(y, x)-atan2(Toulouse.ELBOW_PAN_LINK_LENGTH*sin(theta2), Toulouse.SHOULDER_PAN_LINK_LENGTH+Toulouse.ELBOW_PAN_LINK_LENGTH*cos(theta2))
 		self.new_state(theta1=theta1, theta2=theta2)
 
+	# THETA1
+	@property
+	def THETA1(self):
+		return self.theta1
+
+	@THETA1.setter
+	def THETA1(self, value):
+		self.new_state(theta1=value)
+
+	# THETA2
+	@property
+	def THETA2(self):
+		return self.theta2
+
+	@THETA2.setter
+	def THETA2(self, value):
+		self.new_state(theta2=value)
+
+	# D3
+	@property
+	def D3(self):
+		return self.d3
+
+	@D3.setter
+	def D3(self, value):
+		self.new_state(d3=value)
+
 	# X
 	@property
 	def X(self):

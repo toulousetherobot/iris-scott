@@ -18,14 +18,6 @@ CONTROLLER_XSIZE = settings.WINDOWWIDTH - settings.UI_MARGIN_LEFT - settings.UI_
 CONTROLLER_YSIZE = 65
 CONTROLLER_YGAP = 6
 
-AXIS_X = 1
-AXIS_Y = 2
-AXIS_Z = 3
-
-AXIS_THETA1 = 4
-AXIS_THETA2 = 5
-AXIS_D3     = 6
-
 BUTTON_EDIT = 0
 BUTTON_ADD = 1
 BUTTON_ADD_ICN = "plus_icn_15.png"
@@ -33,7 +25,6 @@ BUTTON_SUBTRACT = 2
 BUTTON_SUBTRACT_ICN = "minus_icn_15.png"
 
 AXIS_CARTESIAN = [{
-		"id": AXIS_X,
 		"identifier": "X",
 		"name": "X Coordinate",
 		"max": 0.000,
@@ -41,7 +32,6 @@ AXIS_CARTESIAN = [{
 		"change": 0.100,
 		"color": colours.PHOSPHORIC_COLORS,
 	},{
-		"id": AXIS_Y,
 		"identifier": "Y",
 		"name": "Y Coordinate",
 		"max": 0.000,
@@ -49,7 +39,6 @@ AXIS_CARTESIAN = [{
 		"change": 0.100,
 		"color": colours.PINK_COLORS,
 	},{
-		"id": AXIS_Z,
 		"identifier": "Z",
 		"name": "Z Coordinate",
 		"max": 0.000,
@@ -59,21 +48,21 @@ AXIS_CARTESIAN = [{
 	}]
 
 AXIS_JOINT = [{
-		"id": AXIS_THETA1,
+		"identifier": "THETA1",
 		"name": "Theta 1 Angle",
 		"max": 0.000,
 		"min": 17.000,
 		"change": 0.100,
 		"color": colours.PHOSPHORIC_COLORS,
 	},{
-		"id": AXIS_THETA2,
+		"identifier": "THETA2",
 		"name": "Theta 2 Angle",
 		"max": 0.000,
 		"min": 17.000,
 		"change": 0.100,
 		"color": colours.PINK_COLORS,
 	},{
-		"id": AXIS_D3,
+		"identifier": "D3",
 		"name": "Z Distance",
 		"max": 0.000,
 		"min": 17.000,
