@@ -13,12 +13,27 @@ import ui
 from ui.passcode import *
 
 def main():
+
+  PITFT_BUTTON_1 = 17
+  PITFT_BUTTON_2 = 22
+  PITFT_BUTTON_3 = 23
+  PITFT_BUTTON_4 = 27
+
+  running_on_pi = False
+
   if (os.getenv('FRAMEBUFFER') is not None):
+    running_on_pi = True
     # Pi Specific Settings
     os.putenv('SDL_VIDEODRIVER', 'fbcon')
     os.putenv('SDL_FBDEV', '/dev/fb1')
     os.putenv('SDL_MOUSEDEV', '/dev/input/touchscreen')
     os.putenv('SDL_MOUSEDRV', 'TSLIB')
+
+    import RPi.GPIO as GPIO
+    GPIO.setmode(GPIO.BCM)
+    for k in [PITFT_BUTTON_1, PITFT_BUTTON_2, PITFT_BUTTON_3, PITFT_BUTTON_4]:
+        GPIO.setup(k, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
 
   global FPSCLOCK, DISPLAYSURF
   pygame.init()
@@ -30,7 +45,7 @@ def main():
   mousex = 0 # used to store x coordinate of mouse event
   mousey = 0 # used to store y coordinate of mouse event
 
-  if (os.getenv('FRAMEBUFFER') is not None):
+  if (running_on_pi):
     pygame.mouse.set_visible(False)
   else:
     pygame.display.set_caption('Toulouse')
@@ -64,6 +79,23 @@ def main():
 
     mouseClicked = False
 
+    if (running_on_pi):
+      # Button #1 (Mocked by Q) Messages
+      if (not toulouse.locked and GPIO.input(PITFT_BUTTON_1) == False):
+        toulouse.load_screen(ui.state.Page.MESSAGES_LIST_SCREEN)
+
+      # Button #2 (Mocked by W) Program Selection
+      if (not toulouse.locked and GPIO.input(PITFT_BUTTON_2) == False):
+        toulouse.load_screen(ui.state.Page.PROGRAM_SELECTION_SCREEN)
+
+      # Button #3 (Mocked by E) Messages
+      # if (not toulouse.locked and GPIO.input(PITFT_BUTTON_3) == False):
+      #   toulouse.load_screen(ui.state.Page.PASSCODE_LOCK_SCREEN)
+
+      # Button #4 (Mocked by R) Main Menu
+      if (not toulouse.locked and GPIO.input(PITFT_BUTTON_4) == False):
+        toulouse.load_screen(ui.state.Page.MAIN_MENU_SCREEN)
+
     for event in pygame.event.get():
       if event.type == QUIT:
         pygame.quit()
@@ -81,6 +113,22 @@ def main():
         if (event.button != 4 and event.button != 5):
           mouseClicked = True
         pygame.event.clear(pygame.MOUSEBUTTONUP)
+      elif event.type == pygame.KEYDOWN:
+        # Button #1 (Mocked by Q) Messages
+        if (not toulouse.locked and event.key == pygame.K_q):
+          toulouse.load_screen(ui.state.Page.MESSAGES_LIST_SCREEN)
+
+        # Button #2 (Mocked by W) Program Selection
+        if (not toulouse.locked and event.key == pygame.K_w):
+          toulouse.load_screen(ui.state.Page.PROGRAM_SELECTION_SCREEN)
+
+        # Button #3 (Mocked by E) Messages
+        # if (not toulouse.locked and event.key == pygame.K_e):
+        #   toulouse.load_screen(ui.state.Page.PASSCODE_LOCK_SCREEN)
+
+        # Button #4 (Mocked by R) Main Menu
+        if (not toulouse.locked and event.key == pygame.K_r):
+          toulouse.load_screen(ui.state.Page.MAIN_MENU_SCREEN)
 
     # Window Tree
     if (toulouse.page == ui.state.Page.SPLASH_SCREEN):
