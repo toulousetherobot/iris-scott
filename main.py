@@ -15,7 +15,10 @@ from ui.passcode import *
 def main():
   if (os.getenv('FRAMEBUFFER') is not None):
     # Pi Specific Settings
+    os.putenv('SDL_VIDEODRIVER', 'fbcon')
     os.putenv('SDL_FBDEV', '/dev/fb1')
+    os.putenv('SDL_MOUSEDEV', '/dev/input/touchscreen')
+    os.putenv('SDL_MOUSEDRV', 'TSLIB')
 
   global FPSCLOCK, DISPLAYSURF
   pygame.init()
@@ -341,9 +344,9 @@ def main():
             elif (button["value"] == ui.messages.BUTTON_CLEAR):
               toulouse.load_screen(ui.state.Page.MESSAGES_LIST_SCREEN)
     else: # Display Home Screen
-      if (not loaded_new_state):
+      if (not toulouse.loaded_new_state):
         print("----> Displaying Home Screen")
-        loaded_new_state = 1
+        toulouse.loaded_screen(ui.state.Page.HOME_SCREEN)
 
       DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
 
