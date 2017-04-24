@@ -51,7 +51,7 @@ def main():
     pygame.display.set_caption('Toulouse')
 
   # Initalise OS Logic State
-  toulouse = ui.state.Toulouse()
+  toulouse = ui.state.Toulouse(running_on_pi)
 
   # Security
   passcode_attempt = []

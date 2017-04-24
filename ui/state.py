@@ -63,8 +63,9 @@ class Toulouse(object):
 	CURVES_EXT = ".crv"
 	CURVES_PREPROCESSED_EXT = ".pkt"
 
-	def __init__(self):
+	def __init__(self, running_on_pi):
 
+		self.running_on_pi = running_on_pi
 		self.mode = Mode.UNINITIALIZED_MODE
 		self.page = Page.NO_SCREEN_CHOSEN
 		self.loaded_new_state = False
@@ -158,10 +159,14 @@ class Toulouse(object):
 
 	def restart(self):
 		print("      ATTENTION, TOULOUSE POWER TO BE CYCLED IMMEDIATELY. PLEASE STAND CLEAR.")
+		if (self.running_on_pi):
+			os.system("sudo shutdown -r now")
 		exit(0)
 
 	def shutdown(self):
 		print("      ATTENTION, TOULOUSE TO BE POWERED DOWN IMMEDIATELY. PLEASE STAND CLEAR.")
+		if (self.running_on_pi):
+			os.system("sudo shutdown -h now")
 		exit(0)
 
 	def load_program(self, program):
