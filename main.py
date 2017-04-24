@@ -122,7 +122,7 @@ def main():
         # display only most recent digit
         passcode_title = (u"\u2022 " * (len(passcode_attempt)-1))
         passcode_title += str(passcode_attempt[-1])
-      elif(len(passcode_attempt) == 0):
+      elif(len(passcode_attempt) == 0 and passcode_title != "Wrong Passcode"):
         passcode_title = "Enter Passcode"
 
       # Render Passcode Header
@@ -143,8 +143,6 @@ def main():
               passcode_attempt.pop()
             elif (button["value"] == "clear"):
               del passcode_attempt[:]
-            print("Passcode Attempt: ", passcode_attempt)
-            print("Clicked", button["value"])
 
       # Attempt to Login
       if (toulouse.login(passcode_attempt) == False):

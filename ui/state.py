@@ -246,7 +246,8 @@ class Toulouse(object):
 	# X
 	@property
 	def X(self):
-		return Toulouse.SHOULDER_PAN_LINK_LENGTH*cos(self.theta1)+Toulouse.ELBOW_PAN_LINK_LENGTH*cos(self.theta1+self.theta2)
+		if self.theta1 is not None or self.theta2 is not None:
+			return Toulouse.SHOULDER_PAN_LINK_LENGTH*cos(self.theta1)+Toulouse.ELBOW_PAN_LINK_LENGTH*cos(self.theta1+self.theta2)
 
 	@X.setter
 	def X(self, value):
@@ -255,7 +256,8 @@ class Toulouse(object):
 	# Y
 	@property
 	def Y(self):
-		return Toulouse.SHOULDER_PAN_LINK_LENGTH*sin(self.theta1)+Toulouse.ELBOW_PAN_LINK_LENGTH*sin(self.theta1+self.theta2)
+		if self.theta1 is not None or self.theta2 is not None:
+			return Toulouse.SHOULDER_PAN_LINK_LENGTH*sin(self.theta1)+Toulouse.ELBOW_PAN_LINK_LENGTH*sin(self.theta1+self.theta2)
 
 	@Y.setter
 	def Y(self, value):
@@ -264,7 +266,8 @@ class Toulouse(object):
 	# Z
 	@property
 	def Z(self):
-		return self.d3
+		if self.theta1 is not None or self.theta2 is not None:
+			return self.d3
 
 	@Z.setter
 	def Z(self, value):

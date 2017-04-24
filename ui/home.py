@@ -42,6 +42,9 @@ def glance(surface, robot, glance, y, x=settings.UI_MARGIN, width=GLANCE_XSIZE, 
 	if (glance["identifier"] == "frame" and robot.program is None):
 		return
 
+	if (getattr(robot, glance["identifier"]) is None):
+		return
+
 	rect         = Rect((x,y,width,height))
 	original_color = deepcopy(glance["color"])
 	if isinstance(glance["color"], list):
