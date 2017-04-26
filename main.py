@@ -201,8 +201,11 @@ def main():
               del passcode_attempt[:]
 
       # Attempt to Login
-      if (toulouse.login(passcode_attempt) == False):
+      login_attempt = toulouse.login(passcode_attempt)
+      if (login_attempt == False):
         passcode_title = "Wrong Passcode"
+        del passcode_attempt[:]
+      elif (login_attempt == True):
         del passcode_attempt[:]
     elif (toulouse.page == ui.state.Page.MAIN_MENU_SCREEN):
       if (not toulouse.loaded_new_state):
