@@ -173,6 +173,9 @@ class Toulouse(object):
 			os.system("sudo shutdown -h now")
 		exit(0)
 
+	def back(self):
+		return self.load_screen(self.previous_OS_states[-2].page)
+
 	def load_program(self, program):
 		if (self.program != program):
 			# Check Program still exists

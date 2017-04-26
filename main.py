@@ -238,9 +238,7 @@ def main():
             if (button["value"] == ui.mainmenu.BUTTON_LOCK):
               toulouse.lock()
             if (button["value"] == ui.mainmenu.BUTTON_CANCEL):
-              os_state = prev_state
-              loaded_new_state = 0
-              prev_state = ui.state.Page.MAIN_MENU_SCREEN
+              toulouse.back()
     elif (toulouse.page == ui.state.Page.MANUAL_JOG_CARTESIAN_SCREEN):
       if (not toulouse.loaded_new_state):
         print("----> Displaying Manual Jog (Cartesian) Screen")
