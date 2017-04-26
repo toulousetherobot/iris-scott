@@ -174,7 +174,12 @@ class Toulouse(object):
 		exit(0)
 
 	def back(self):
-		return self.load_screen(self.previous_OS_states[-2].page)
+		if (not self.locked and self.page != Page.HOME_SCREEN):
+			prev_page = self.previous_OS_states[-2].page
+			if (prev_page in [Page.NO_SCREEN_CHOSEN, Page.SPLASH_SCREEN, Page.PASSCODE_LOCK_SCREEN] or 
+				self.page in [Page.MANUAL_JOG_CARTESIAN_SCREEN, Page.MANUAL_JOG_JOINT_SCREEN, Page.PROGRAM_SELECTION_SCREEN, Page.MESSAGES_LIST_SCREEN]):
+				prev_page = Page.HOME_SCREEN
+			return self.load_screen(prev_page)
 
 	def load_program(self, program):
 		if (self.program != program):

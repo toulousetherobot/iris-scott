@@ -79,17 +79,17 @@ def main():
     mouseClicked = False
 
     if (running_on_pi):
-      # Button #1 (Mocked by Q) Messages
+      # Button #1 (Mocked by Q) Back
       if (not toulouse.locked and GPIO.input(PITFT_BUTTON_1) == False):
+        toulouse.back()
+
+      # Button #2 (Mocked by W) Messages
+      if (not toulouse.locked and GPIO.input(PITFT_BUTTON_2) == False):
         toulouse.load_screen(ui.state.Page.MESSAGES_LIST_SCREEN)
 
-      # Button #2 (Mocked by W) Program Selection
-      if (not toulouse.locked and GPIO.input(PITFT_BUTTON_2) == False):
+      # Button #3 (Mocked by E) Program Selection
+      if (not toulouse.locked and GPIO.input(PITFT_BUTTON_3) == False):
         toulouse.load_screen(ui.state.Page.PROGRAM_SELECTION_SCREEN)
-
-      # Button #3 (Mocked by E) Messages
-      # if (not toulouse.locked and GPIO.input(PITFT_BUTTON_3) == False):
-      #   toulouse.load_screen(ui.state.Page.PASSCODE_LOCK_SCREEN)
 
       # Button #4 (Mocked by R) Main Menu
       if (not toulouse.locked and GPIO.input(PITFT_BUTTON_4) == False):
@@ -113,17 +113,17 @@ def main():
           mouseClicked = True
         pygame.event.clear(pygame.MOUSEBUTTONUP)
       elif event.type == pygame.KEYDOWN:
-        # Button #1 (Mocked by Q) Messages
+        # Button #1 (Mocked by Q) Back
         if (not toulouse.locked and event.key == pygame.K_q):
+          toulouse.back()
+
+        # Button #2 (Mocked by W) Messages
+        if (not toulouse.locked and event.key == pygame.K_w):
           toulouse.load_screen(ui.state.Page.MESSAGES_LIST_SCREEN)
 
-        # Button #2 (Mocked by W) Program Selection
-        if (not toulouse.locked and event.key == pygame.K_w):
+        # Button #3 (Mocked by E) Program Selection
+        if (not toulouse.locked and event.key == pygame.K_e):
           toulouse.load_screen(ui.state.Page.PROGRAM_SELECTION_SCREEN)
-
-        # Button #3 (Mocked by E) Messages
-        # if (not toulouse.locked and event.key == pygame.K_e):
-        #   toulouse.load_screen(ui.state.Page.PASSCODE_LOCK_SCREEN)
 
         # Button #4 (Mocked by R) Main Menu
         if (not toulouse.locked and event.key == pygame.K_r):
