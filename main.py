@@ -60,7 +60,6 @@ def main():
   message_id = None
 
   # Image Loading
-  img_splash = pygame.image.load('splash.png').convert_alpha()
   SPLASH_TIMEOUT = 1
   splash_start = None
 
@@ -136,7 +135,16 @@ def main():
         print("----> Displaying Splash Screen")
         splash_start = datetime.now() + timedelta(seconds=SPLASH_TIMEOUT)
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
-        DISPLAYSURF.blit(img_splash, (20, 59))
+        img_splash_surf = pygame.image.load('splash.png').convert_alpha()
+        img_splash_rect = img_splash_surf.get_rect()
+        img_splash_rect.center = (settings.WINDOWWIDTH/2, settings.WINDOWHEIGHT/2)
+        DISPLAYSURF.blit(img_splash_surf, img_splash_rect)
+
+        inetaddr_text_surf = ui.fonts.SF_UI_DISPLAY_HEAVY.render(toulouse.inetaddr, True, ui.colours.WHITE, ui.colours.BLACK)
+        inetaddr_text_rect = inetaddr_text_surf.get_rect()
+        inetaddr_text_rect.midtop = (settings.WINDOWWIDTH/2, settings.WINDOWHEIGHT-settings.UI_MARGIN_TOP)
+        DISPLAYSURF.blit(inetaddr_text_surf, inetaddr_text_rect)
+
         toulouse.load()
         toulouse.loaded_screen(ui.state.Page.SPLASH_SCREEN)
 
