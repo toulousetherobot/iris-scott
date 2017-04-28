@@ -354,7 +354,6 @@ def main():
     elif (toulouse.page == ui.state.Page.MESSAGES_LIST_SCREEN):
       if (not toulouse.loaded_new_state):
         print("----> Displaying Message List Screen")
-        loaded_new_state = 1
         scroll_y = 0 # reset scroll
         toulouse.loaded_screen(ui.state.Page.MESSAGES_LIST_SCREEN)
 
@@ -398,7 +397,22 @@ def main():
               toulouse.load_screen(ui.state.Page.MESSAGES_LIST_SCREEN)
             elif (button["value"] == ui.messages.BUTTON_CLEAR):
               toulouse.load_screen(ui.state.Page.MESSAGES_LIST_SCREEN)
+    elif (toulouse.page == ui.state.Page.HOME_AXES_SCREEN):
+      if (not toulouse.loaded_new_state):
+        print("----> Displaying Home Axes Screen")
+        homeaxes_buttons = ui.homeaxes.message_display(DISPLAYSURF, toulouse)
+        toulouse.loaded_screen(ui.state.Page.HOME_AXES_SCREEN)
+
+      # Button Logic
+      if (mouseClicked):
+        for button in homeaxes_buttons:
+          if button["target"].collidepoint((mousex, mousey)):
+            if (button["value"] == ui.homeaxes.BUTTON_ACKNOWLEDGE):
+              toulouse.home_axes()
+
     else: # Display Home Screen
+      if (toulouse.mode == ui.state.Mode.NO_MODE_CHOSEN):
+        toulouse.load_screen(ui.state.Page.HOME_AXES_SCREEN)
       if (not toulouse.loaded_new_state):
         print("----> Displaying Home Screen")
         toulouse.loaded_screen(ui.state.Page.HOME_SCREEN)

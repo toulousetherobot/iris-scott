@@ -18,6 +18,8 @@ class Mode(Enum):
 	STOP_CATEGORY_ONE  = 1
 	STOP_CATEGORY_TWO  = 2
 
+	STOP_MODES = [STOP_CATEGORY_ZERO, STOP_CATEGORY_ONE, STOP_CATEGORY_TWO]
+
 	NO_MODE_CHOSEN   = 10
 	NORMAL_MODE      = 11
 	MANUAL_MODE      = 12
@@ -39,6 +41,7 @@ class Page(Enum):
 	CURVES_SELECTION_SCREEN = 9
 	MESSAGES_LIST_SCREEN = 10
 	MESSAGE_SCREEN = 11
+	HOME_AXES_SCREEN = 12
 
 class State(object):
 	def __init__(self, mode, page, theta1, theta2, d3, program, frame):
@@ -180,6 +183,10 @@ class Toulouse(object):
 				self.page in [Page.MANUAL_JOG_CARTESIAN_SCREEN, Page.MANUAL_JOG_JOINT_SCREEN, Page.PROGRAM_SELECTION_SCREEN, Page.MESSAGES_LIST_SCREEN]):
 				prev_page = Page.HOME_SCREEN
 			return self.load_screen(prev_page)
+
+	def home_axes(self):
+		self.new_state(mode=Mode.MANUAL_MODE, theta1=0, theta2=0, d3=0)
+		return self.load_screen(Page.HOME_SCREEN)
 
 	def load_program(self, program):
 		if (self.program != program):
