@@ -33,8 +33,8 @@ def main():
   sizeMode = 1
 
   # Buffers for viewfinder data
-  rgb = bytearray(ui.settings.WINDOWWIDTH * ui.settings.WINDOWHEIGHT * 3)
-  yuv = bytearray(ui.settings.WINDOWWIDTH * ui.settings.WINDOWHEIGHT * 3 / 2)
+  rgb = bytearray(int(ui.settings.WINDOWWIDTH * ui.settings.WINDOWHEIGHT * 3))
+  yuv = bytearray(int(ui.settings.WINDOWWIDTH * ui.settings.WINDOWHEIGHT * 3 / 2))
 
   if (os.getenv('FRAMEBUFFER') is not None):
     running_on_pi = True
