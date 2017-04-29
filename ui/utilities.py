@@ -9,19 +9,31 @@ from . import state
 
 BUTTON_HEADER = 100
 
-def Header(surface, robot, title, color=colours.WHITE, bg_color=colours.SCREEN_BG_COLOR):
+def TransparentRect(surface, rect, color, transparency=64):
+    rect = Rect(rect)
+    color = Color(*color)
+    color.a = transparency
+
+    s = Surface(rect.size, SRCALPHA)
+    s.fill(color)
+    surface.blit(s, rect.topleft)
+
+def Header(surface, robot, title, color=colours.WHITE, bg_color=colours.SCREEN_BG_COLOR, transparency=False):
 
     rect = Rect(0,0, settings.WINDOWWIDTH, settings.UI_MARGIN_TOP)
-    draw.rect(surface, bg_color, rect)
+    if (transparency):
+        TransparentRect(surface, rect, bg_color)
+    else:
+        draw.rect(surface, bg_color, rect)
 
-    title_text_surf = fonts.SF_UI_DISPLAY_HEAVY.render(title, True, color, bg_color)
+    title_text_surf = fonts.SF_UI_DISPLAY_HEAVY.render(title, True, color)
     title_text_rect = title_text_surf.get_rect()
     title_text_rect.midleft = (settings.UI_MARGIN_LEFT, settings.UI_MARGIN_TOP/2)
     surface.blit(title_text_surf, title_text_rect)
 
     # Time
     now = datetime.now()
-    time_text_surf = fonts.SF_UI_DISPLAY_LIGHT.render(now.strftime(settings.TIME_STRING), True, color, bg_color)
+    time_text_surf = fonts.SF_UI_DISPLAY_LIGHT.render(now.strftime(settings.TIME_STRING), True, color)
     time_text_rect = time_text_surf.get_rect()
     time_text_rect.midright = (settings.WINDOWWIDTH -settings.UI_MARGIN_RIGHT, settings.UI_MARGIN_TOP/2)
     surface.blit(time_text_surf, time_text_rect)

@@ -3,6 +3,7 @@ Created on April 9, 2017
 @author: aramael
 '''
 import pygame
+import pygame.camera
 import sys
 import os
 from pygame.locals import *
@@ -34,7 +35,6 @@ def main():
     for k in [PITFT_BUTTON_1, PITFT_BUTTON_2, PITFT_BUTTON_3, PITFT_BUTTON_4]:
         GPIO.setup(k, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-
   global FPSCLOCK, DISPLAYSURF
   pygame.init()
   FPSCLOCK = pygame.time.Clock()
@@ -47,11 +47,22 @@ def main():
 
   if (running_on_pi):
     pygame.mouse.set_visible(False)
+    
+    pygame.camera.init()
+
+    camlist = pygame.camera.list_cameras()
+    if camlist:
+      cam = pygame.camera.Camera(camlist[0],(ui.settings.WINDOWWIDTH,ui.settings.WINDOWHEIGHT))
+      cam.start()
+      # cam.set_controls(hflip = True, vflip = False)
+      print(cam.get_controls())
   else:
     pygame.display.set_caption('Toulouse')
 
   # Initalise OS Logic State
   toulouse = ui.state.Toulouse(running_on_pi)
+  toulouse.locked = False
+  toulouse.load_screen(ui.state.Page.PHOTO_CAPTURE_SCREEN)
 
   # Security
   passcode_attempt = []
@@ -62,6 +73,10 @@ def main():
   # Image Loading
   SPLASH_TIMEOUT = 1
   splash_start = None
+
+  # Caricature Paramaters
+  cusd_queue_id = None
+  cusd_queue_id = "nSsRGBCj"
 
   # Scroll Parameters
   scroll_y_min = 0
@@ -97,6 +112,8 @@ def main():
 
     for event in pygame.event.get():
       if event.type == QUIT:
+        if (running_on_pi):
+          cam.stop()
         pygame.quit()
         sys.exit()
       elif event.type == MOUSEBUTTONDOWN:
@@ -318,10 +335,36 @@ def main():
             if (button["value"] == ui.program.BUTTON_CURVES):
               toulouse.load_screen(ui.state.Page.CURVES_SELECTION_SCREEN)
     elif (toulouse.page == ui.state.Page.PHOTO_CAPTURE_SCREEN):
-      if (not loaded_new_state):
+      if (not toulouse.loaded_new_state):
         print("----> Displaying Photo Capture Screen")
-        loaded_new_state = 1
-        DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
+        snapshot = pygame.surface.Surface((ui.settings.WINDOWWIDTH, ui.settings.WINDOWHEIGHT))
+        toulouse.loaded_screen(ui.state.Page.PHOTO_CAPTURE_SCREEN)
+
+      if running_on_pi:
+        if cam.query_image():
+          snapshot = cam.get_image(snapshot)
+
+        # blit it to the display surface.  simple!
+        DISPLAYSURF.blit(snapshot, (0,0))
+      else:
+        DISPLAYSURF.fill(ui.colours.SUCCESS_GREEN)
+
+      ui.utilities.Header(DISPLAYSURF, toulouse, "Programs", transparency=True)
+
+      ui.utilities.TransparentRect(DISPLAYSURF, (0,ui.settings.WINDOWHEIGHT-ui.settings.UI_MARGIN_BOTTOM - 56 - ui.settings.UI_MARGIN, ui.settings.WINDOWWIDTH, 56 + ui.settings.UI_MARGIN + ui.settings.UI_MARGIN_BOTTOM), ui.colours.SCREEN_BG_COLOR)
+      button_circ = [ui.settings.WINDOWWIDTH/2, ui.settings.WINDOWHEIGHT-ui.settings.UI_MARGIN_BOTTOM - 28, 56]
+      ui.utilities.FilledCircle(DISPLAYSURF, button_circ, ui.colours.WHITE)
+      button_circ[2] = 42
+      ui.utilities.FilledCircle(DISPLAYSURF, button_circ, ui.colours.SCREEN_BG_COLOR)
+      button_circ[2] = 38
+      ui.utilities.FilledCircle(DISPLAYSURF, button_circ, ui.colours.WHITE)
+
+      if (cusd_queue_id is not None):
+        queue_id_text_surf = ui.fonts.OCRA.render("CUSD:{id}".format(id=cusd_queue_id), True, ui.colours.WARNING_ORANGE)
+        queue_id_text_rect = queue_id_text_surf.get_rect()
+        queue_id_text_rect.bottomleft = (settings.UI_MARGIN_LEFT, ui.settings.WINDOWHEIGHT-ui.settings.UI_MARGIN_BOTTOM)
+        DISPLAYSURF.blit(queue_id_text_surf, queue_id_text_rect)
+
     elif (toulouse.page == ui.state.Page.CURVES_SELECTION_SCREEN):
       if (not toulouse.loaded_new_state):
         print("----> Displaying Curves Selection Screen")
