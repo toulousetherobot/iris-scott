@@ -3,7 +3,6 @@ Created on April 9, 2017
 @author: aramael
 '''
 import pygame
-import pygame.camera
 import sys
 import os
 from pygame.locals import *
@@ -22,6 +21,21 @@ def main():
 
   running_on_pi = False
 
+  #
+  # Camera Params
+  #
+  sizeData = [ # Camera parameters for different size settings
+  # Full res      Viewfinder  Crop window
+  [(2592, 1944), (320, 240), (0.0   , 0.0   , 1.0   , 1.0   )], # Large
+  [(1920, 1080), (320, 180), (0.1296, 0.2222, 0.7408, 0.5556)], # Med
+  [(1440, 1080), (320, 240), (0.2222, 0.2222, 0.5556, 0.5556)]] # Small
+
+  sizeMode = 1
+
+  # Buffers for viewfinder data
+  rgb = bytearray(ui.settings.WINDOWWIDTH * ui.settings.WINDOWHEIGHT * 3)
+  yuv = bytearray(ui.settings.WINDOWWIDTH * ui.settings.WINDOWHEIGHT * 3 / 2)
+
   if (os.getenv('FRAMEBUFFER') is not None):
     running_on_pi = True
     # Pi Specific Settings
@@ -35,6 +49,17 @@ def main():
     for k in [PITFT_BUTTON_1, PITFT_BUTTON_2, PITFT_BUTTON_3, PITFT_BUTTON_4]:
         GPIO.setup(k, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+    import io
+    import picamera
+    import yuv2rgb
+
+    # Init camera and set up default values
+    camera = picamera.PiCamera()
+    camera.resolution = sizeData[sizeMode][1]
+    #camera.crop = sizeData[sizeMode][2]
+    camera.crop = (0.0, 0.0, 1.0, 1.0)
+    # Leave raw format at default YUV, don't touch, don't set to RGB!
+
   global FPSCLOCK, DISPLAYSURF
   pygame.init()
   FPSCLOCK = pygame.time.Clock()
@@ -47,15 +72,6 @@ def main():
 
   if (running_on_pi):
     pygame.mouse.set_visible(False)
-    
-    pygame.camera.init()
-
-    camlist = pygame.camera.list_cameras()
-    if camlist:
-      cam = pygame.camera.Camera(camlist[0],(ui.settings.WINDOWWIDTH,ui.settings.WINDOWHEIGHT))
-      cam.start()
-      # cam.set_controls(hflip = True, vflip = False)
-      print(cam.get_controls())
   else:
     pygame.display.set_caption('Toulouse')
 
@@ -337,17 +353,19 @@ def main():
     elif (toulouse.page == ui.state.Page.PHOTO_CAPTURE_SCREEN):
       if (not toulouse.loaded_new_state):
         print("----> Displaying Photo Capture Screen")
-        snapshot = pygame.surface.Surface((ui.settings.WINDOWWIDTH, ui.settings.WINDOWHEIGHT))
+
+        # Refresh display
+        stream = io.BytesIO() # Capture into in-memory stream
+        camera.capture(stream, use_video_port=True, format='raw')
+        stream.seek(0)
+        stream.readinto(yuv)  # stream -> YUV buffer
+        stream.close()
+        yuv2rgb.convert(yuv, rgb, sizeData[sizeMode][1][0], sizeData[sizeMode][1][1])
+        img = pygame.image.frombuffer(rgb[0:(sizeData[sizeMode][1][0] * sizeData[sizeMode][1][1] * 3)],sizeData[sizeMode][1], 'RGB')
+
+        DISPLAYSURF.blit(img,((ui.settings.WINDOWWIDTH - img.get_width() ) / 2,(ui.settings.WINDOWHEIGHT - img.get_height()) / 2))
+
         toulouse.loaded_screen(ui.state.Page.PHOTO_CAPTURE_SCREEN)
-
-      if running_on_pi:
-        if cam.query_image():
-          snapshot = cam.get_image(snapshot)
-
-        # blit it to the display surface.  simple!
-        DISPLAYSURF.blit(snapshot, (0,0))
-      else:
-        DISPLAYSURF.fill(ui.colours.SUCCESS_GREEN)
 
       ui.utilities.Header(DISPLAYSURF, toulouse, "Programs", transparency=True)
 
@@ -364,7 +382,6 @@ def main():
         queue_id_text_rect = queue_id_text_surf.get_rect()
         queue_id_text_rect.bottomleft = (settings.UI_MARGIN_LEFT, ui.settings.WINDOWHEIGHT-ui.settings.UI_MARGIN_BOTTOM)
         DISPLAYSURF.blit(queue_id_text_surf, queue_id_text_rect)
-
     elif (toulouse.page == ui.state.Page.CURVES_SELECTION_SCREEN):
       if (not toulouse.loaded_new_state):
         print("----> Displaying Curves Selection Screen")
@@ -452,7 +469,6 @@ def main():
           if button["target"].collidepoint((mousex, mousey)):
             if (button["value"] == ui.homeaxes.BUTTON_ACKNOWLEDGE):
               toulouse.home_axes()
-
     else: # Display Home Screen
       if (toulouse.mode == ui.state.Mode.NO_MODE_CHOSEN):
         toulouse.load_screen(ui.state.Page.HOME_AXES_SCREEN)
