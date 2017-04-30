@@ -26,7 +26,7 @@ def main():
   #
   sizeData = [ # Camera parameters for different size settings
   # Full res      Viewfinder  Crop window
-  [(2592, 1944), (320, 240), (0.0   , 0.0   , 0.0   , 0.0   )], # Large
+  [(2592, 1944), (320, 240), (0.0   , 0.0   , 0.0   , 0.0   )]] # Large
 
   sizeMode = 0
 
@@ -35,6 +35,7 @@ def main():
   yuv = bytearray(int(ui.settings.WINDOWWIDTH * ui.settings.WINDOWHEIGHT * 3 / 2))
 
   if (os.getenv('FRAMEBUFFER') is not None):
+    print ("RUNNING ON PI")
     running_on_pi = True
     # Pi Specific Settings
     os.putenv('SDL_VIDEODRIVER', 'fbcon')
@@ -126,8 +127,6 @@ def main():
 
     for event in pygame.event.get():
       if event.type == QUIT:
-        if (running_on_pi):
-          cam.stop()
         pygame.quit()
         sys.exit()
       elif event.type == MOUSEBUTTONDOWN:
@@ -390,7 +389,12 @@ def main():
         for button in photo_capture_buttons:
           if button["target"].collidepoint((mousex, mousey)):
             if (button["value"] == BUTTON_PHOTO_CAPTURE):
-              print("Take Picture", toulouse.get_photos_filename())
+              filename = toulouse.get_photos_filename()
+              print("Taking Picture", filename)
+              try:
+                camera.capture(filename, use_video_port=False, format='jpeg', thumbnail=None)
+                # Set image file ownership to pi user, mode to 644
+                os.chmod(filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
             if (button["value"] == BUTTON_CUSD_CLEAR):
               cusd_queue_id = None
     elif (toulouse.page == ui.state.Page.CURVES_SELECTION_SCREEN):
