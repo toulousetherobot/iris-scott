@@ -26,11 +26,9 @@ def main():
   #
   sizeData = [ # Camera parameters for different size settings
   # Full res      Viewfinder  Crop window
-  [(2592, 1944), (320, 240), (0.0   , 0.0   , 1.0   , 1.0   )], # Large
-  [(1920, 1080), (320, 180), (0.1296, 0.2222, 0.7408, 0.5556)], # Med
-  [(1440, 1080), (320, 240), (0.2222, 0.2222, 0.5556, 0.5556)]] # Small
+  [(2592, 1944), (320, 240), (0.0   , 0.0   , 0.0   , 0.0   )], # Large
 
-  sizeMode = 1
+  sizeMode = 0
 
   # Buffers for viewfinder data
   rgb = bytearray(int(ui.settings.WINDOWWIDTH * ui.settings.WINDOWHEIGHT * 3))
@@ -56,8 +54,7 @@ def main():
     # Init camera and set up default values
     camera = picamera.PiCamera()
     camera.resolution = sizeData[sizeMode][1]
-    #camera.crop = sizeData[sizeMode][2]
-    camera.crop = (0.0, 0.0, 1.0, 1.0)
+    camera.crop = sizeData[sizeMode][2]
     # Leave raw format at default YUV, don't touch, don't set to RGB!
 
   global FPSCLOCK, DISPLAYSURF
@@ -77,6 +74,7 @@ def main():
 
   # Initalise OS Logic State
   toulouse = ui.state.Toulouse(running_on_pi)
+  toulouse.load()
   toulouse.locked = False
   toulouse.load_screen(ui.state.Page.PHOTO_CAPTURE_SCREEN)
 
@@ -353,23 +351,26 @@ def main():
     elif (toulouse.page == ui.state.Page.PHOTO_CAPTURE_SCREEN):
       if (not toulouse.loaded_new_state):
         print("----> Displaying Photo Capture Screen")
-
-        # Refresh display
-        stream = io.BytesIO() # Capture into in-memory stream
-        camera.capture(stream, use_video_port=True, format='raw')
-        stream.seek(0)
-        stream.readinto(yuv)  # stream -> YUV buffer
-        stream.close()
-        yuv2rgb.convert(yuv, rgb, sizeData[sizeMode][1][0], sizeData[sizeMode][1][1])
-        img = pygame.image.frombuffer(rgb[0:(sizeData[sizeMode][1][0] * sizeData[sizeMode][1][1] * 3)],sizeData[sizeMode][1], 'RGB')
-
-        DISPLAYSURF.blit(img,((ui.settings.WINDOWWIDTH - img.get_width() ) / 2,(ui.settings.WINDOWHEIGHT - img.get_height()) / 2))
-
+        BUTTON_PHOTO_CAPTURE = 1
+        BUTTON_CUSD_CLEAR = 2
         toulouse.loaded_screen(ui.state.Page.PHOTO_CAPTURE_SCREEN)
+
+      photo_capture_buttons = []
+      # Refresh display
+      stream = io.BytesIO() # Capture into in-memory stream
+      camera.capture(stream, use_video_port=True, format='raw')
+      stream.seek(0)
+      stream.readinto(yuv)  # stream -> YUV buffer
+      stream.close()
+      yuv2rgb.convert(yuv, rgb, sizeData[sizeMode][1][0], sizeData[sizeMode][1][1])
+      img = pygame.image.frombuffer(rgb[0:(sizeData[sizeMode][1][0] * sizeData[sizeMode][1][1] * 3)],sizeData[sizeMode][1], 'RGB')
+
+      DISPLAYSURF.blit(img,((ui.settings.WINDOWWIDTH - img.get_width() ) / 2,(ui.settings.WINDOWHEIGHT - img.get_height()) / 2))
 
       ui.utilities.Header(DISPLAYSURF, toulouse, "Programs", transparency=True)
 
-      ui.utilities.TransparentRect(DISPLAYSURF, (0,ui.settings.WINDOWHEIGHT-ui.settings.UI_MARGIN_BOTTOM - 56 - ui.settings.UI_MARGIN, ui.settings.WINDOWWIDTH, 56 + ui.settings.UI_MARGIN + ui.settings.UI_MARGIN_BOTTOM), ui.colours.SCREEN_BG_COLOR)
+      camera_capture = ui.utilities.TransparentRect(DISPLAYSURF, (0,ui.settings.WINDOWHEIGHT-ui.settings.UI_MARGIN_BOTTOM - 56 - ui.settings.UI_MARGIN, ui.settings.WINDOWWIDTH, 56 + ui.settings.UI_MARGIN + ui.settings.UI_MARGIN_BOTTOM), ui.colours.SCREEN_BG_COLOR)
+      photo_capture_buttons.append({"target": camera_capture, "value": BUTTON_PHOTO_CAPTURE})
       button_circ = [ui.settings.WINDOWWIDTH/2, ui.settings.WINDOWHEIGHT-ui.settings.UI_MARGIN_BOTTOM - 28, 56]
       ui.utilities.FilledCircle(DISPLAYSURF, button_circ, ui.colours.WHITE)
       button_circ[2] = 42
@@ -382,6 +383,16 @@ def main():
         queue_id_text_rect = queue_id_text_surf.get_rect()
         queue_id_text_rect.bottomleft = (settings.UI_MARGIN_LEFT, ui.settings.WINDOWHEIGHT-ui.settings.UI_MARGIN_BOTTOM)
         DISPLAYSURF.blit(queue_id_text_surf, queue_id_text_rect)
+        photo_capture_buttons.append({"target": queue_id_text_rect, "value": BUTTON_CUSD_CLEAR})
+
+      # Button Logic
+      if (mouseClicked):
+        for button in photo_capture_buttons:
+          if button["target"].collidepoint((mousex, mousey)):
+            if (button["value"] == BUTTON_PHOTO_CAPTURE):
+              print("Take Picture", toulouse.get_photos_filename())
+            if (button["value"] == BUTTON_CUSD_CLEAR):
+              cusd_queue_id = None
     elif (toulouse.page == ui.state.Page.CURVES_SELECTION_SCREEN):
       if (not toulouse.loaded_new_state):
         print("----> Displaying Curves Selection Screen")

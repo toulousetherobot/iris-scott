@@ -13,6 +13,22 @@ from datetime import datetime
 from copy import deepcopy
 from math import cos, sin, sqrt, atan2
 
+def check_exists_or_make_directory(path):
+    if not os.path.isdir(path):
+        try:
+            os.makedirs(path)
+
+            # Set new directory ownership to pi user, mode to 755
+            os.chown(path, uid, gid)
+            os.chmod(path,
+            stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR |
+            stat.S_IRGRP | stat.S_IXGRP |
+            stat.S_IROTH | stat.S_IXOTH)
+        except OSError as e:
+            # errno = 2 if can't create folder
+            print(e.errno)
+    return path
+
 class Mode(Enum):
 	STOP_CATEGORY_ZERO = 0
 	STOP_CATEGORY_ONE  = 1
@@ -63,6 +79,7 @@ class Toulouse(object):
 	SHOULDER_PAN_LINK_LENGTH = 8.75
 	ELBOW_PAN_LINK_LENGTH = 8.75
 
+	PHOTOS_FOLDER = "photos"
 	CURVES_FOLDER = "curves"
 	CURVES_EXT = ".crv"
 	CURVES_PREPROCESSED_EXT = ".pkt"
@@ -221,6 +238,16 @@ class Toulouse(object):
 				return True
 		return False
 
+	def get_photos_filename(self):
+		# Scan for next available image slot
+		id = 0
+		while True:
+			filename = os.join(self.photos_path, "IMG_{:04d}.jpg".format(id))
+			if not os.path.isfile(filename):
+				return filename
+			id += 1
+			if id > 9999: id = 0
+
 	def curve_files(self):
 		# Create Sorted List of Files
 		files = []
@@ -334,10 +361,8 @@ class Toulouse(object):
 	def load(self):
 		# Check Curves Directory Exists & If Not Create One
 		current_directory = os.getcwd()
-		curves_path = os.path.join(current_directory, Toulouse.CURVES_FOLDER)
-		if not os.path.exists(curves_path):
-		  os.makedirs(curves_path, exist_ok=True)
-		self.curves_path = curves_path
+		self.curves_path = check_exists_or_make_directory(os.path.join(current_directory, Toulouse.CURVES_FOLDER))
+		self.photos_path = check_exists_or_make_directory(os.path.join(current_directory, Toulouse.PHOTOS_FOLDER))
 
 		# Set Up Messages
 		self.connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
