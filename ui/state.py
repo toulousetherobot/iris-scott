@@ -3,6 +3,7 @@ Created on April 17, 2017
 @author: aramael
 """
 import os
+import stat
 import subprocess
 import pika
 import json
@@ -242,7 +243,7 @@ class Toulouse(object):
 		# Scan for next available image slot
 		id = 0
 		while True:
-			filename = os.join(self.photos_path, "IMG_{:04d}.jpg".format(id))
+			filename = os.path.join(self.photos_path, "IMG_{:04d}.jpg".format(id))
 			if not os.path.isfile(filename):
 				return filename
 			id += 1

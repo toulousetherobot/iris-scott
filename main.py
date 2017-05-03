@@ -5,6 +5,7 @@ Created on April 9, 2017
 import pygame
 import sys
 import os
+import stat
 from pygame.locals import *
 from datetime import datetime, timedelta
 
@@ -368,10 +369,10 @@ def main():
 
       ui.utilities.Header(DISPLAYSURF, toulouse, "Programs", transparency=True)
 
-      camera_capture = ui.utilities.TransparentRect(DISPLAYSURF, (0,ui.settings.WINDOWHEIGHT-ui.settings.UI_MARGIN_BOTTOM - 56 - ui.settings.UI_MARGIN, ui.settings.WINDOWWIDTH, 56 + ui.settings.UI_MARGIN + ui.settings.UI_MARGIN_BOTTOM), ui.colours.SCREEN_BG_COLOR)
-      photo_capture_buttons.append({"target": camera_capture, "value": BUTTON_PHOTO_CAPTURE})
+      ui.utilities.TransparentRect(DISPLAYSURF, (0,ui.settings.WINDOWHEIGHT-ui.settings.UI_MARGIN_BOTTOM - 56 - ui.settings.UI_MARGIN, ui.settings.WINDOWWIDTH, 56 + ui.settings.UI_MARGIN + ui.settings.UI_MARGIN_BOTTOM), ui.colours.SCREEN_BG_COLOR)
       button_circ = [ui.settings.WINDOWWIDTH/2, ui.settings.WINDOWHEIGHT-ui.settings.UI_MARGIN_BOTTOM - 28, 56]
-      ui.utilities.FilledCircle(DISPLAYSURF, button_circ, ui.colours.WHITE)
+      camera_capture = ui.utilities.FilledCircle(DISPLAYSURF, button_circ, ui.colours.WHITE)
+      photo_capture_buttons.append({"target": camera_capture, "value": BUTTON_PHOTO_CAPTURE})
       button_circ[2] = 42
       ui.utilities.FilledCircle(DISPLAYSURF, button_circ, ui.colours.SCREEN_BG_COLOR)
       button_circ[2] = 38
