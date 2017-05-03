@@ -193,7 +193,7 @@ class Toulouse(object):
 		exit(0)
 
 	def process_caricature(self):
-		filename = toulouse.get_photos_filename()
+		filename = self.get_photos_filename()
 		print("Taking Picture", filename)
 		try:
 			camera.capture(filename, use_video_port=False, format='jpeg', thumbnail=None)
