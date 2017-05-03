@@ -76,6 +76,8 @@ def main():
 
   # Initalise OS Logic State
   toulouse = ui.state.Toulouse(running_on_pi)
+  toulouse.locked = False
+  toulouse.load()
   toulouse.load_screen(ui.state.Page.PHOTO_CAPTURE_SCREEN)
 
   # Security
