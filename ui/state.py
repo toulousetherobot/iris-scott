@@ -206,7 +206,7 @@ class Toulouse(object):
 			curves_file = output_file + ".crv"
 			full_curves_file = os.path.join(self.curves_path, curves_file)
 		# Convert to Curves File
-			subprocess.call(["python", "/home/pi/image-processing/cv/process.py", filename, full_curves_file, "no"])
+			subprocess.call([/home/pi/image-processing/cv/process.sh", filename, full_curves_file, "no"])
 			self.load_program(curves_file)
 			pkt_file = full_curves_file.replace(Toulouse.CURVES_EXT, Toulouse.CURVES_PREPROCESSED_EXT)
 			subprocess.Popen(["/home/pi/toulouseos/draw", pkt_file])
