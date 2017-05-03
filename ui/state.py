@@ -184,8 +184,6 @@ class Toulouse(object):
 
 	def restart(self):
 		print("      ATTENTION, TOULOUSE POWER TO BE CYCLED IMMEDIATELY. PLEASE STAND CLEAR.")
-		if (self.running_on_pi):
-			os.system("sudo shutdown -r now")
 		exit(0)
 
 	def shutdown(self):
@@ -193,6 +191,25 @@ class Toulouse(object):
 		if (self.running_on_pi):
 			os.system("sudo shutdown -h now")
 		exit(0)
+
+	def process_caricature(self):
+		filename = toulouse.get_photos_filename()
+			print("Taking Picture", filename)
+		try:
+			camera.capture(filename, use_video_port=False, format='jpeg', thumbnail=None)
+			# Set image file ownership to pi user, mode to 644
+			os.chmod(filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
+			self.load_screen(Page.HOME_SCREEN)
+		finally:
+			output_file = os.path.splitext(filename)[0]
+			output_file = os.path.basename(filename)
+			curves_file = output_file + ".crv"
+			full_curves_file = os.path.join(self.curves_path, curves_file)
+		# Convert to Curves File
+			subprocess.run(["python", "/home/pi/cv/process.py", filename, full_curves_file, "no"])
+			self.load_program(curves_file)
+			pkt_file = program.replace(Toulouse.CURVES_EXT, Toulouse.CURVES_PREPROCESSED_EXT)
+			subprocess.Popen(["/home/pi/toulouseos/draw", pkt_file])
 
 	def back(self):
 		if (not self.locked and self.page != Page.HOME_SCREEN):
@@ -224,10 +241,10 @@ class Toulouse(object):
 					if (program_stat.st_mtime > pkt_file_stat.st_mtime):
 						self.new_message("info", "Old Packets", "Requesting an updated set of packets.")
 
-						subprocess.run(["./crvpreprocessor", program, pkt_file])
+						subprocess.run(["/home/pi/toulouseos/crvpreprocessor", program, pkt_file])
 						self.new_message("success", "Pre-Processed Packets", program_name)
 				else:
-						subprocess.run(["./crvpreprocessor", program, pkt_file])					
+						subprocess.run(["/home/pi/toulouseos/crvpreprocessor", program, pkt_file])					
 						self.new_message("success", "Pre-Processed Packets", program_name)
 
 				pkt_file_stat = os.stat(pkt_file)

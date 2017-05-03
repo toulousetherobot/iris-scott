@@ -164,7 +164,7 @@ def main():
         print("----> Displaying Splash Screen")
         splash_start = datetime.now() + timedelta(seconds=SPLASH_TIMEOUT)
         DISPLAYSURF.fill(ui.colours.SCREEN_BG_COLOR)
-        img_splash_surf = pygame.image.load('splash.png').convert_alpha()
+        img_splash_surf = pygame.image.load('/home/pi/toulouseos/splash.png').convert_alpha()
         img_splash_rect = img_splash_surf.get_rect()
         img_splash_rect.center = (settings.WINDOWWIDTH/2, settings.WINDOWHEIGHT/2)
         DISPLAYSURF.blit(img_splash_surf, img_splash_rect)

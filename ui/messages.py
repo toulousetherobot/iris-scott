@@ -69,16 +69,16 @@ def rounded_button(surface, button, x, y,
 
 	if button["type"] == "info":
 		notification_color = colours.INFO_BLUE
-		icon_img = "info_icn_42.png"
+		icon_img = "/home/pi/toulouseos/info_icn_42.png"
 	elif button["type"] == "success":
 		notification_color = colours.SUCCESS_GREEN
-		icon_img = "success_icn_42.png"
+		icon_img = "/home/pi/toulouseos/success_icn_42.png"
 	elif button["type"] == "warning":
 		notification_color = colours.WARNING_ORANGE
-		icon_img = "warning_icn_42.png"
+		icon_img = "/home/pi/toulouseos/warning_icn_42.png"
 	elif button["type"] == "error":
 		notification_color = colours.ERROR_RED
-		icon_img = "error_icn_42.png"
+		icon_img = "/home/pi/toulouseos/error_icn_42.png"
 	else:
 		notification_color = colours.WHITE
 
@@ -111,16 +111,16 @@ def message_display(surface, robot, button, title_font=MESSAGE_TITLE_FONT, footn
 
 	if button["type"] == "info":
 		notification_color = colours.INFO_BLUE
-		icon_img = "info_icn_63.png"
+		icon_img = "/home/pi/toulouseos/info_icn_63.png"
 	elif button["type"] == "success":
 		notification_color = colours.SUCCESS_GREEN
-		icon_img = "success_icn_63.png"
+		icon_img = "/home/pi/toulouseos/success_icn_63.png"
 	elif button["type"] == "warning":
 		notification_color = colours.WARNING_ORANGE
-		icon_img = "warning_icn_63.png"
+		icon_img = "/home/pi/toulouseos/warning_icn_63.png"
 	elif button["type"] == "error":
 		notification_color = colours.ERROR_RED
-		icon_img = "error_icn_63.png"
+		icon_img = "/home/pi/toulouseos/error_icn_63.png"
 	else:
 		notification_color = colours.WHITE
 

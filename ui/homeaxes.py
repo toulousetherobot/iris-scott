@@ -25,7 +25,7 @@ def message_display(surface, robot, title_font=MESSAGE_TITLE_FONT, footnote_font
 	Header(surface, robot, "Home Axes", colours.WHITE)
 
 	# Image
-	icn_img = pygame.image.load("home_axes_63.png").convert_alpha()
+	icn_img = pygame.image.load("/home/pi/toulouseos/home_axes_63.png").convert_alpha()
 	icn_img_rect = icn_img.get_rect()
 	icn_img_rect.midtop = (settings.WINDOWWIDTH/2, settings.UI_MARGIN_TOP)
 	surface.blit(icn_img, icn_img_rect)

@@ -31,17 +31,17 @@ BUTTON_CANCEL = 4
 
 BUTTONS = [
 	{
-		"icon": "lock.png",
+		"icon": "/home/pi/toulouseos/lock.png",
 		"title": "Lock",
 		"footnote": "Lock Toulouse Control Panel",
 		"value": BUTTON_LOCK},
 	{
-		"icon": "restart.png",
+		"icon": "/home/pi/toulouseos/restart.png",
 		"title": "Restart",
 		"footnote": "Power off & Restart Toulouse",
 		"value": BUTTON_RESTART},
 	{
-		"icon": "shutdown.png",
+		"icon": "/home/pi/toulouseos/shutdown.png",
 		"title": "Shutdown",
 		"footnote": "Power off Toulouse",
 		"value": BUTTON_SHUTDOWN},]
