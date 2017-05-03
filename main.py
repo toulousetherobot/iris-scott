@@ -116,7 +116,7 @@ def main():
 
       # Button #2 (Mocked by W) Messages
       if (not toulouse.locked and GPIO.input(PITFT_BUTTON_2) == False):
-        toulouse.load_screen(ui.state.Page.MESSAGES_LIST_SCREEN)
+        toulouse.load_screen(ui.state.Page.PHOTO_CAPTURE_SCREEN)
 
       # Button #3 (Mocked by E) Program Selection
       if (not toulouse.locked and GPIO.input(PITFT_BUTTON_3) == False):
