@@ -205,7 +205,7 @@ class Toulouse(object):
 			camera.resolution = (320, 240)
 			output_file = os.path.splitext(filename)[0]
 			output_file = os.path.basename(filename)
-			curves_file = full_curves_file.replace(".jpg", Toulouse.CURVES_EXT)
+			curves_file = output_file.replace(".jpg", Toulouse.CURVES_EXT)
 			full_curves_file = os.path.join(self.curves_path, curves_file)
 			print("Curves File", full_curves_file)
 		# Convert to Curves File
