@@ -15,9 +15,9 @@ from ui.passcode import *
 
 def main():
 
-  PITFT_BUTTON_1 = 17
+  PITFT_BUTTON_1 = 23
   PITFT_BUTTON_2 = 22
-  PITFT_BUTTON_3 = 23
+  PITFT_BUTTON_3 = 17
   PITFT_BUTTON_4 = 27
 
   running_on_pi = False
@@ -109,8 +109,8 @@ def main():
 
     if (running_on_pi):
       # Button #1 (Mocked by Q) Back
-      if (not toulouse.locked and GPIO.input(PITFT_BUTTON_1) == False):
-        toulouse.back()
+      # if (not toulouse.locked and GPIO.input(PITFT_BUTTON_1) == False):
+      #   toulouse.back()
 
       # Button #2 (Mocked by W) Messages
       if (not toulouse.locked and GPIO.input(PITFT_BUTTON_2) == False):
@@ -383,21 +383,27 @@ def main():
         DISPLAYSURF.blit(queue_id_text_surf, queue_id_text_rect)
         photo_capture_buttons.append({"target": queue_id_text_rect, "value": BUTTON_CUSD_CLEAR})
 
+      if (running_on_pi):
+        # Button #1 (Mocked by Q) Back
+        if (not toulouse.locked and GPIO.input(PITFT_BUTTON_1) == False):
+          toulouse.process_caricature()
+
       # Button Logic
-      if (mouseClicked):
-        for button in photo_capture_buttons:
-          if button["target"].collidepoint((mousex, mousey)):
-            if (button["value"] == BUTTON_PHOTO_CAPTURE):
-              filename = toulouse.get_photos_filename()
-              print("Taking Picture", filename)
-              try:
-                camera.capture(filename, use_video_port=False, format='jpeg', thumbnail=None)
-                # Set image file ownership to pi user, mode to 644
-                os.chmod(filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
-              finally:
-                pass
-            if (button["value"] == BUTTON_CUSD_CLEAR):
-              cusd_queue_id = None
+      # if (mouseClicked):
+      #   for button in photo_capture_buttons:
+      #     if button["target"].collidepoint((mousex, mousey)):
+      #       if (button["value"] == BUTTON_PHOTO_CAPTURE):
+      #         filename = toulouse.get_photos_filename()
+      #         print("Taking Picture", filename)
+      #         try:
+      #           camera.capture(filename, use_video_port=False, format='jpeg', thumbnail=None)
+      #           # Set image file ownership to pi user, mode to 644
+      #           os.chmod(filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
+      #         finally:
+      #           # Convert to Curves File
+      #           # python process.py image1.jpg output1 no
+      #       if (button["value"] == BUTTON_CUSD_CLEAR):
+      #         cusd_queue_id = None
     elif (toulouse.page == ui.state.Page.CURVES_SELECTION_SCREEN):
       if (not toulouse.loaded_new_state):
         print("----> Displaying Curves Selection Screen")
