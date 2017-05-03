@@ -192,7 +192,7 @@ class Toulouse(object):
 			os.system("sudo shutdown -h now")
 		exit(0)
 
-	def process_caricature(self):
+	def process_caricature(self, camera):
 		filename = self.get_photos_filename()
 		print("Taking Picture", filename)
 		try:

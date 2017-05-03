@@ -388,7 +388,7 @@ def main():
       if (running_on_pi):
         # Button #1 (Mocked by Q) Back
         if (not toulouse.locked and GPIO.input(PITFT_BUTTON_1) == False):
-          toulouse.process_caricature()
+          toulouse.process_caricature(camera)
 
       # Button Logic
       # if (mouseClicked):
