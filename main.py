@@ -395,6 +395,8 @@ def main():
                 camera.capture(filename, use_video_port=False, format='jpeg', thumbnail=None)
                 # Set image file ownership to pi user, mode to 644
                 os.chmod(filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
+              finally:
+                pass
             if (button["value"] == BUTTON_CUSD_CLEAR):
               cusd_queue_id = None
     elif (toulouse.page == ui.state.Page.CURVES_SELECTION_SCREEN):
