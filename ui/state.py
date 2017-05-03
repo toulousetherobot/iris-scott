@@ -196,11 +196,13 @@ class Toulouse(object):
 		filename = self.get_photos_filename()
 		print("Taking Picture", filename)
 		try:
+		    camera.resolution = sizeData[sizeMode][0]
 			camera.capture(filename, use_video_port=False, resize=None, format='jpeg', thumbnail=None)
 			# Set image file ownership to pi user, mode to 644
 			os.chmod(filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
 			self.load_screen(Page.HOME_SCREEN)
 		finally:
+		    camera.resolution = sizeData[sizeMode][1]
 			output_file = os.path.splitext(filename)[0]
 			output_file = os.path.basename(filename)
 			curves_file = output_file + ".crv"
