@@ -120,7 +120,7 @@ def main():
 
       # Button #3 (Mocked by E) Program Selection
       if (not toulouse.locked and GPIO.input(PITFT_BUTTON_3) == False):
-        toulouse.load_screen(ui.state.Page.PROGRAM_SELECTION_SCREEN)
+        toulouse.load_screen(ui.state.Page.MAIN_MENU_SCREEN)
 
       # Button #4 (Mocked by R) Main Menu
       if (not toulouse.locked and GPIO.input(PITFT_BUTTON_4) == False):
