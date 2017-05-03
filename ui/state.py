@@ -194,7 +194,7 @@ class Toulouse(object):
 
 	def process_caricature(self):
 		filename = toulouse.get_photos_filename()
-			print("Taking Picture", filename)
+		print("Taking Picture", filename)
 		try:
 			camera.capture(filename, use_video_port=False, format='jpeg', thumbnail=None)
 			# Set image file ownership to pi user, mode to 644

@@ -76,7 +76,7 @@ def main():
 
   # Initalise OS Logic State
   toulouse = ui.state.Toulouse(running_on_pi)
-  toulouse.load_screen(ui.state.Page.SPLASH_SCREEN)
+  toulouse.load_screen(ui.state.Page.PHOTO_CAPTURE_SCREEN)
 
   # Security
   passcode_attempt = []
